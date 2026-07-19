@@ -83,10 +83,26 @@
             background: #25D366;
             color: var(--white);
             box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            justify-content: center;
+            width: 100%;
         }
         .btn-whatsapp:hover {
             background: #1da851;
             transform: translateY(-3px);
+        }
+        .btn-whatsapp i {
+            font-size: 1.2rem;
         }
 
         .btn-secondary {
@@ -344,9 +360,6 @@
             color: var(--gray);
             font-size: 0.95rem;
             margin-bottom: 12px;
-        }
-        .product-info .btn {
-            width: 100%;
         }
 
         .empty-products {
@@ -651,7 +664,7 @@
             font-size: 0.8rem;
         }
 
-        /* ===== IMAGE UPLOAD - GALLERY ONLY ===== */
+        /* ===== IMAGE UPLOAD ===== */
         .image-upload-box {
             border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 12px;
@@ -1258,7 +1271,7 @@
             });
         });
 
-        // ===== IMAGE UPLOAD - GALLERY ONLY =====
+        // ===== IMAGE UPLOAD =====
         const imageInput = document.getElementById('productImageInput');
         const imagePreview = document.getElementById('imagePreview');
         const uploadBox = document.getElementById('imageUploadBox');
@@ -1271,7 +1284,6 @@
         imageInput.addEventListener('change', function(e) {
             const file = this.files[0];
             if (file) {
-                // Check if image
                 if (!file.type.startsWith('image/')) {
                     alert('⚠️ Please select an image file (JPG, PNG, etc.)');
                     this.value = '';
@@ -1399,7 +1411,7 @@
                 }
             }
 
-            // Render public page - FIXED: images now show properly
+            // Render public page - FIXED WhatsApp link
             const grid = document.getElementById('productsGrid');
             if (grid) {
                 if (products.length === 0) {
@@ -1410,23 +1422,54 @@
                         </div>
                     `;
                 } else {
-                    grid.innerHTML = products.map(product => `
-                        <div class="product-card">
-                            <img src="${product.image}" alt="${product.name}" />
-                            <div class="product-info">
-                                <span class="category">${product.category || 'General'}</span>
-                                <h3>${product.name}</h3>
-                                <div class="price">${product.price}</div>
-                                <p class="description">${product.description || ''}</p>
-                                <a href="https://wa.me/${product.contact.replace(/[^0-9]/g, '')}?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" 
-                                   target="_blank" class="btn btn-whatsapp">
-                                    <i class="fab fa-whatsapp"></i> Contact on WhatsApp
-                                </a>
+                    grid.innerHTML = products.map(product => {
+                        // Clean phone number - remove all non-digits
+                        const cleanNumber = product.contact.replace(/[^0-9]/g, '');
+                        // Ensure it has country code (if less than 10 digits, assume Nigeria +234)
+                        let phoneNumber = cleanNumber;
+                        if (phoneNumber.length === 10) {
+                            phoneNumber = '234' + phoneNumber;
+                        } else if (phoneNumber.length === 11 && phoneNumber.startsWith('0')) {
+                            phoneNumber = '234' + phoneNumber.substring(1);
+                        }
+                        // WhatsApp link with proper format
+                        const waLink = `https://wa.me/${phoneNumber}?text=Hello%2C%20I'm%20interested%20in%20${encodeURIComponent(product.name)}`;
+                        
+                        return `
+                            <div class="product-card">
+                                <img src="${product.image}" alt="${product.name}" />
+                                <div class="product-info">
+                                    <span class="category">${product.category || 'General'}</span>
+                                    <h3>${product.name}</h3>
+                                    <div class="price">${product.price}</div>
+                                    <p class="description">${product.description || ''}</p>
+                                    <a href="${waLink}" 
+                                       target="_blank" 
+                                       class="btn-whatsapp"
+                                       onclick="openWhatsApp('${phoneNumber}', '${product.name}')">
+                                        <i class="fab fa-whatsapp"></i> Contact on WhatsApp
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `;
+                    }).join('');
                 }
             }
+        }
+
+        // ===== OPEN WHATSAPP =====
+        function openWhatsApp(number, productName) {
+            // Clean number
+            let cleanNumber = number.replace(/[^0-9]/g, '');
+            if (cleanNumber.length === 10) {
+                cleanNumber = '234' + cleanNumber;
+            } else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) {
+                cleanNumber = '234' + cleanNumber.substring(1);
+            }
+            const message = `Hello%2C%20I'm%20interested%20in%20${encodeURIComponent(productName)}`;
+            const url = `https://wa.me/${cleanNumber}?text=${message}`;
+            window.open(url, '_blank');
+            return false;
         }
 
         // ===== ADD PRODUCT =====
@@ -1473,7 +1516,7 @@
             uploadBox.querySelector('p').style.display = 'block';
 
             loadProducts();
-            alert('✅ Product added successfully! Your image is saved.');
+            alert('✅ Product added successfully!');
         });
 
         // ===== DELETE PRODUCT =====
