@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Affiliate Pro | Best Deals</title>
     <style>
-        /* ===== ALL CSS HERE ===== */
+        /* ===== ALL CSS ===== */
         * {
             margin: 0;
             padding: 0;
@@ -15,16 +15,20 @@
         :root {
             --primary: #6C63FF;
             --primary-dark: #5A52D5;
-            --dark: #1a1a2e;
-            --light: #f8f9fa;
-            --gray: #6c757d;
+            --dark: #0a0a1a;
+            --dark-card: #141428;
+            --light: #f0f2f5;
+            --gray: #8892b0;
             --white: #ffffff;
-            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             --radius: 16px;
             --transition: 0.3s ease;
         }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--light);
@@ -38,14 +42,22 @@
             padding: 0 24px;
         }
 
-        img { max-width: 100%; display: block; border-radius: var(--radius); }
-        a { text-decoration: none; color: inherit; }
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 14px 28px;
+            padding: 14px 32px;
             border-radius: 50px;
             font-weight: 600;
             font-size: 1rem;
@@ -64,6 +76,17 @@
         .btn-primary:hover {
             background: var(--primary-dark);
             transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(108, 99, 255, 0.45);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: var(--white);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+        }
+        .btn-whatsapp:hover {
+            background: #1da851;
+            transform: translateY(-3px);
         }
 
         .btn-secondary {
@@ -81,11 +104,14 @@
             background: #ff4444;
             color: var(--white);
         }
-        .btn-danger:hover { background: #cc0000; }
+        .btn-danger:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+        }
 
         /* ===== HEADER ===== */
         .header {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             position: fixed;
             width: 100%;
@@ -108,13 +134,19 @@
             font-size: 1.5rem;
             font-weight: 800;
         }
-        .logo i { color: var(--primary); font-size: 1.8rem; }
-        .logo span { color: var(--primary-dark); }
+        .logo i {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        .logo span {
+            color: var(--primary-dark);
+        }
 
         .nav ul {
             list-style: none;
             display: flex;
             gap: 32px;
+            align-items: center;
         }
         .nav ul li a {
             font-weight: 500;
@@ -134,9 +166,28 @@
             transition: var(--transition);
         }
         .nav ul li a:hover::after,
-        .nav ul li a.active::after { width: 100%; }
+        .nav ul li a.active::after {
+            width: 100%;
+        }
         .nav ul li a:hover,
-        .nav ul li a.active { color: var(--dark); }
+        .nav ul li a.active {
+            color: var(--dark);
+        }
+
+        .nav-admin-btn {
+            background: var(--primary);
+            color: var(--white) !important;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+        .nav-admin-btn:hover {
+            background: var(--primary-dark) !important;
+            color: var(--white) !important;
+        }
+        .nav-admin-btn::after {
+            display: none !important;
+        }
 
         .hamburger {
             display: none;
@@ -183,14 +234,20 @@
             line-height: 1.1;
             margin-bottom: 20px;
         }
-        .hero-content h1 span { color: var(--primary); }
+        .hero-content h1 span {
+            color: var(--primary);
+        }
         .hero-content p {
             font-size: 1.15rem;
             color: var(--gray);
             max-width: 500px;
             margin-bottom: 32px;
         }
-        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
         .hero-image img {
             width: 100%;
             height: 400px;
@@ -221,7 +278,9 @@
             font-size: 2.8rem;
             font-weight: 800;
         }
-        .section-header h2 span { color: var(--primary); }
+        .section-header h2 span {
+            color: var(--primary);
+        }
         .section-header p {
             color: var(--gray);
             font-size: 1.1rem;
@@ -257,7 +316,9 @@
             height: 220px;
             object-fit: cover;
         }
-        .product-info { padding: 20px 24px 24px; }
+        .product-info {
+            padding: 20px 24px 24px;
+        }
         .product-info h3 {
             font-size: 1.2rem;
             font-weight: 700;
@@ -292,15 +353,23 @@
             font-size: 0.9rem;
             margin-bottom: 16px;
         }
-        .product-info .contact-info i { color: var(--primary); }
-        .product-info .btn { width: 100%; }
+        .product-info .contact-info i {
+            color: var(--primary);
+        }
+        .product-info .btn {
+            width: 100%;
+        }
 
         .empty-products {
             text-align: center;
             padding: 60px 20px;
             color: var(--gray);
         }
-        .empty-products i { font-size: 4rem; color: #ddd; margin-bottom: 16px; }
+        .empty-products i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 16px;
+        }
 
         /* ===== ABOUT ===== */
         .about {
@@ -323,7 +392,9 @@
             font-weight: 800;
             margin-bottom: 16px;
         }
-        .about-content h2 span { color: var(--primary); }
+        .about-content h2 span {
+            color: var(--primary);
+        }
         .about-content p {
             color: var(--gray);
             font-size: 1.05rem;
@@ -359,13 +430,17 @@
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
-        .contact-content { padding: 60px 48px; }
+        .contact-content {
+            padding: 60px 48px;
+        }
         .contact-content h2 {
             font-size: 2.6rem;
             font-weight: 800;
             margin-bottom: 12px;
         }
-        .contact-content h2 span { color: var(--primary); }
+        .contact-content h2 span {
+            color: var(--primary);
+        }
         .contact-content p {
             color: var(--gray);
             font-size: 1.05rem;
@@ -423,8 +498,13 @@
             font-weight: 800;
             color: var(--white);
         }
-        .footer-brand span span { color: var(--primary); }
-        .footer-brand p { margin-top: 8px; font-size: 0.95rem; }
+        .footer-brand span span {
+            color: var(--primary);
+        }
+        .footer-brand p {
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
         .footer-links h4,
         .footer-social h4 {
             color: var(--white);
@@ -441,7 +521,9 @@
             font-size: 0.95rem;
             transition: var(--transition);
         }
-        .footer-links ul li a:hover { color: var(--primary); }
+        .footer-links ul li a:hover {
+            color: var(--primary);
+        }
         .social-icons {
             display: flex;
             gap: 16px;
@@ -468,30 +550,61 @@
             font-size: 0.9rem;
         }
 
-        /* ===== ADMIN PANEL (Hidden by default) ===== */
+        /* ============================================
+                   PROFESSIONAL ADMIN PANEL
+                   ============================================ */
         .admin-panel {
             display: none;
             padding: 120px 0 60px;
-            background: var(--light);
-        }
-        .admin-panel.active { display: block; }
-
-        .admin-header {
             background: var(--dark);
+            min-height: 100vh;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+
+        /* Admin Header */
+        .admin-header {
+            background: var(--dark-card);
             padding: 16px 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .admin-header .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .admin-header .logo { color: var(--white); }
-        .admin-header .logo span { color: var(--primary); }
+        .admin-header .logo {
+            color: var(--white);
+        }
+        .admin-header .logo span {
+            color: var(--primary);
+        }
 
+        .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--gray);
+        }
+        .admin-user .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Admin Stats */
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -499,13 +612,13 @@
             margin-bottom: 40px;
         }
         .stat-card {
-            background: var(--white);
+            background: var(--dark-card);
             padding: 24px;
             border-radius: var(--radius);
             display: flex;
             align-items: center;
             gap: 20px;
-            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .stat-card i {
             font-size: 2.5rem;
@@ -515,17 +628,19 @@
         .stat-card h3 {
             font-size: 1.8rem;
             font-weight: 800;
+            color: var(--white);
         }
         .stat-card p {
             color: var(--gray);
             font-size: 0.9rem;
         }
 
+        /* Admin Cards */
         .admin-card {
-            background: var(--white);
+            background: var(--dark-card);
             padding: 32px;
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             margin-bottom: 30px;
         }
         .admin-card h2 {
@@ -534,8 +649,11 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--white);
         }
-        .admin-card h2 i { color: var(--primary); }
+        .admin-card h2 i {
+            color: var(--primary);
+        }
 
         .form-grid {
             display: grid;
@@ -547,58 +665,80 @@
             flex-direction: column;
             gap: 6px;
         }
-        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
         .form-group label {
             font-weight: 600;
             font-size: 0.9rem;
+            color: var(--gray);
         }
         .form-group input,
         .form-group select,
         .form-group textarea {
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             font-size: 1rem;
             font-family: inherit;
             transition: var(--transition);
-            background: var(--light);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--white);
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--gray);
         }
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .form-group select option {
+            background: var(--dark);
+            color: var(--white);
         }
         .form-group small {
             color: var(--gray);
             font-size: 0.8rem;
         }
 
+        /* Admin Product List */
         .admin-product-item {
             display: flex;
             align-items: center;
             gap: 16px;
             padding: 16px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transition: var(--transition);
         }
-        .admin-product-item:hover { background: var(--light); }
+        .admin-product-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
         .admin-product-item img {
             width: 60px;
             height: 60px;
             object-fit: cover;
             border-radius: 8px;
         }
-        .admin-product-item .info { flex: 1; }
+        .admin-product-item .info {
+            flex: 1;
+        }
         .admin-product-item .info h4 {
             font-size: 1rem;
             margin-bottom: 2px;
+            color: var(--white);
         }
         .admin-product-item .info p {
             color: var(--gray);
             font-size: 0.9rem;
         }
-        .admin-product-item .actions { display: flex; gap: 8px; }
+        .admin-product-item .actions {
+            display: flex;
+            gap: 8px;
+        }
         .admin-product-item .actions button {
             padding: 6px 14px;
             border: none;
@@ -609,52 +749,77 @@
             transition: var(--transition);
         }
         .admin-product-item .actions .btn-delete {
-            background: #fee;
+            background: rgba(255, 68, 68, 0.15);
             color: #ff4444;
         }
         .admin-product-item .actions .btn-delete:hover {
             background: #ff4444;
-            color: white;
+            color: var(--white);
         }
 
-        /* ===== LOGIN OVERLAY ===== */
+        /* ===== LOGIN OVERLAY (PROFESSIONAL) ===== */
         .login-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
         }
-        .login-overlay.active { display: flex; }
+        .login-overlay.active {
+            display: flex;
+        }
 
         .login-box {
-            background: var(--white);
+            background: var(--dark-card);
             padding: 48px 40px;
             border-radius: var(--radius);
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
         }
-        .login-box h2 { font-size: 1.8rem; margin-bottom: 4px; }
-        .login-box p { color: var(--gray); margin-bottom: 24px; }
+        .login-box .lock-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(108, 99, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        .login-box h2 {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            color: var(--white);
+        }
+        .login-box p {
+            color: var(--gray);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
         .login-box .input-group {
             display: flex;
             align-items: center;
-            background: var(--light);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             padding: 4px 16px;
             margin-bottom: 16px;
-            border: 2px solid transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
         }
         .login-box .input-group:focus-within {
             border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
         }
         .login-box .input-group i {
             color: var(--gray);
@@ -668,11 +833,36 @@
             width: 100%;
             outline: none;
             font-family: inherit;
+            color: var(--white);
         }
+        .login-box .input-group input::placeholder {
+            color: var(--gray);
+        }
+
         .login-error {
             color: #ff4444;
             margin-top: 12px;
             display: none;
+            font-size: 0.9rem;
+        }
+
+        .login-box .btn {
+            width: 100%;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .back-to-site {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-to-site .btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+        }
+        .back-to-site .btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         /* ===== RESPONSIVE ===== */
@@ -681,17 +871,31 @@
                 grid-template-columns: 1fr;
                 text-align: center;
             }
-            .hero-content p { margin: 0 auto 24px; }
-            .hero-buttons { justify-content: center; }
-            .about-grid { grid-template-columns: 1fr; }
-            .contact-box { grid-template-columns: 1fr; }
-            .contact-image { display: none; }
+            .hero-content p {
+                margin: 0 auto 24px;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-box {
+                grid-template-columns: 1fr;
+            }
+            .contact-image {
+                display: none;
+            }
             .footer-content {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
-            .social-icons { justify-content: center; }
-            .form-grid { grid-template-columns: 1fr; }
+            .social-icons {
+                justify-content: center;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -705,26 +909,47 @@
                 padding: 24px;
                 box-shadow: var(--shadow);
             }
-            .nav.open { display: block; }
+            .nav.open {
+                display: block;
+            }
             .nav ul {
                 flex-direction: column;
                 gap: 16px;
                 align-items: center;
             }
-            .hamburger { display: flex; }
+            .hamburger {
+                display: flex;
+            }
             .hamburger.active span:nth-child(1) {
                 transform: rotate(45deg) translate(5px, 5px);
             }
-            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
             .hamburger.active span:nth-child(3) {
                 transform: rotate(-45deg) translate(5px, -5px);
             }
-            .hero-content h1 { font-size: 2.8rem; }
-            .hero-image img { height: 280px; }
-            .about-image img { height: 280px; }
-            .section-header h2 { font-size: 2.2rem; }
-            .admin-stats { grid-template-columns: 1fr; }
-            .admin-card { padding: 20px; }
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+            .hero-image img {
+                height: 280px;
+            }
+            .about-image img {
+                height: 280px;
+            }
+            .section-header h2 {
+                font-size: 2.2rem;
+            }
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+            .admin-card {
+                padding: 20px;
+            }
+            .login-box {
+                padding: 32px 24px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -732,8 +957,10 @@
 </head>
 <body>
 
-    <!-- ===== HEADER ===== -->
-    <header class="header">
+    <!-- ============================================
+    HEADER
+    ============================================ -->
+    <header class="header" id="mainHeader">
         <div class="container">
             <div class="logo">
                 <i class="fas fa-rocket"></i>
@@ -745,7 +972,9 @@
                     <li><a href="#products">Products</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="#" onclick="showAdmin()"><i class="fas fa-lock"></i> Admin</a></li>
+                    <li><a href="#" class="nav-admin-btn" onclick="showLogin()">
+                        <i class="fas fa-lock"></i> Admin
+                    </a></li>
                 </ul>
             </nav>
             <div class="hamburger" id="hamburger">
@@ -754,24 +983,30 @@
         </div>
     </header>
 
-    <!-- ===== LOGIN OVERLAY ===== -->
+    <!-- ============================================
+    LOGIN OVERLAY (No password showing!)
+    ============================================ -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
-            <h2>🔐 Admin Access</h2>
-            <p>Enter your password to manage products</p>
+            <div class="lock-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>Admin Access</h2>
+            <p>Enter your credentials to continue</p>
             <div class="input-group">
                 <i class="fas fa-key"></i>
                 <input type="password" id="adminPassword" placeholder="Enter password..." />
             </div>
-            <button onclick="login()" class="btn btn-primary" style="width:100%;">
+            <button onclick="login()" class="btn btn-primary">
                 <i class="fas fa-unlock"></i> Unlock Panel
             </button>
-            <p class="login-error" id="loginError">❌ Wrong password! Try again.</p>
-            <p style="margin-top:16px; color:#999; font-size:0.8rem;">Default password: <strong>mama111</strong></p>
+            <p class="login-error" id="loginError">❌ Invalid password. Please try again.</p>
         </div>
     </div>
 
-    <!-- ===== HERO ===== -->
+    <!-- ============================================
+    HERO
+    ============================================ -->
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
@@ -792,7 +1027,9 @@
         </div>
     </section>
 
-    <!-- ===== PRODUCTS ===== -->
+    <!-- ============================================
+    PRODUCTS
+    ============================================ -->
     <section class="products" id="products">
         <div class="container">
             <div class="section-header">
@@ -806,7 +1043,9 @@
         </div>
     </section>
 
-    <!-- ===== ABOUT ===== -->
+    <!-- ============================================
+    ABOUT
+    ============================================ -->
     <section class="about" id="about">
         <div class="container">
             <div class="about-grid">
@@ -837,7 +1076,9 @@
         </div>
     </section>
 
-    <!-- ===== CONTACT ===== -->
+    <!-- ============================================
+    CONTACT
+    ============================================ -->
     <section class="contact" id="contact">
         <div class="container">
             <div class="contact-box">
@@ -868,10 +1109,13 @@
         </div>
     </section>
 
-    <!-- ===== ADMIN PANEL (Hidden by default) ===== -->
+    <!-- ============================================
+    ADMIN PANEL (PROFESSIONAL DARK)
+    ============================================ -->
     <section class="admin-panel" id="adminPanel">
         <div class="container">
-            
+
+            <!-- Admin Stats -->
             <div class="admin-stats">
                 <div class="stat-card">
                     <i class="fas fa-boxes"></i>
@@ -896,6 +1140,7 @@
                 </div>
             </div>
 
+            <!-- Add Product Form -->
             <div class="admin-card">
                 <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
                 <form id="productForm">
@@ -909,10 +1154,6 @@
                             <input type="text" id="productPrice" required placeholder="e.g., $49.99" />
                         </div>
                         <div class="form-group">
-                            <label>Contact Number *</label>
-                            <input type="text" id="productContact" required placeholder="e.g., +234 913 375 0885" />
-                        </div>
-                        <div class="form-group">
                             <label>Category</label>
                             <select id="productCategory">
                                 <option value="Electronics">Electronics</option>
@@ -921,6 +1162,11 @@
                                 <option value="Health">Health & Wellness</option>
                                 <option value="Other">Other</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp Number *</label>
+                            <input type="text" id="productContact" required placeholder="e.g., 2349133750885" />
+                            <small>Enter number without + or spaces</small>
                         </div>
                         <div class="form-group full-width">
                             <label>Description</label>
@@ -931,10 +1177,6 @@
                             <input type="text" id="productImage" required placeholder="https://images.unsplash.com/photo-..." />
                             <small>Use Unsplash or any image URL</small>
                         </div>
-                        <div class="form-group full-width">
-                            <label>Affiliate Link (optional)</label>
-                            <input type="text" id="productLink" placeholder="https://affiliate-link.com/product" />
-                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i> Add Product
@@ -942,6 +1184,7 @@
                 </form>
             </div>
 
+            <!-- Manage Products -->
             <div class="admin-card">
                 <h2><i class="fas fa-list"></i> Manage Products</h2>
                 <div id="adminProductsList">
@@ -949,7 +1192,8 @@
                 </div>
             </div>
 
-            <div style="text-align:center; margin-top:20px;">
+            <!-- Back Button -->
+            <div class="back-to-site">
                 <button onclick="hideAdmin()" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Public Site
                 </button>
@@ -958,7 +1202,9 @@
         </div>
     </section>
 
-    <!-- ===== FOOTER ===== -->
+    <!-- ============================================
+    FOOTER
+    ============================================ -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -992,8 +1238,11 @@
         </div>
     </footer>
 
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
     <script>
-        // ===== ALL JAVASCRIPT HERE =====
+        // ===== ADMIN PASSWORD =====
         const ADMIN_PASSWORD = "mama111";
 
         // ===== HAMBURGER MENU =====
@@ -1032,36 +1281,48 @@
             });
         });
 
-        // ===== SHOW ADMIN =====
-        function showAdmin() {
+        // ===== SHOW LOGIN =====
+        function showLogin() {
             document.getElementById('loginOverlay').classList.add('active');
-            document.getElementById('adminPassword').focus();
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('loginError').style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('adminPassword').focus();
+            }, 300);
         }
 
         // ===== LOGIN =====
         function login() {
             const password = document.getElementById('adminPassword').value.trim();
             const error = document.getElementById('loginError');
-            
+
             if (password === ADMIN_PASSWORD) {
                 document.getElementById('loginOverlay').classList.remove('active');
                 document.getElementById('adminPanel').classList.add('active');
                 document.getElementById('adminPassword').value = '';
                 error.style.display = 'none';
                 loadProducts();
-                
+
                 // Hide public sections
                 document.querySelector('.hero').style.display = 'none';
                 document.querySelector('.products').style.display = 'none';
                 document.querySelector('.about').style.display = 'none';
                 document.querySelector('.contact').style.display = 'none';
                 document.querySelector('.footer').style.display = 'none';
-                
+
                 // Update header
-                document.querySelector('.header .logo').innerHTML = `
+                const header = document.getElementById('mainHeader');
+                header.querySelector('.logo').innerHTML = `
                     <i class="fas fa-shield-alt"></i>
                     <span>Admin<span>Panel</span></span>
                 `;
+                header.style.background = '#0a0a1a';
+                header.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+
+                // Hide nav admin button
+                const adminBtn = document.querySelector('.nav-admin-btn');
+                if (adminBtn) adminBtn.style.display = 'none';
+
             } else {
                 error.style.display = 'block';
                 document.getElementById('adminPassword').value = '';
@@ -1072,38 +1333,45 @@
         // ===== HIDE ADMIN =====
         function hideAdmin() {
             document.getElementById('adminPanel').classList.remove('active');
-            
+
             // Show public sections
             document.querySelector('.hero').style.display = 'block';
             document.querySelector('.products').style.display = 'block';
             document.querySelector('.about').style.display = 'block';
             document.querySelector('.contact').style.display = 'block';
             document.querySelector('.footer').style.display = 'block';
-            
+
             // Reset header
-            document.querySelector('.header .logo').innerHTML = `
+            const header = document.getElementById('mainHeader');
+            header.querySelector('.logo').innerHTML = `
                 <i class="fas fa-rocket"></i>
                 <span>Affiliate<span>Pro</span></span>
             `;
-            
+            header.style.background = 'rgba(255, 255, 255, 0.95)';
+            header.style.borderBottom = '1px solid rgba(0, 0, 0, 0.05)';
+
+            // Show nav admin button
+            const adminBtn = document.querySelector('.nav-admin-btn');
+            if (adminBtn) adminBtn.style.display = 'inline-block';
+
             location.reload();
         }
 
         // ===== LOAD PRODUCTS =====
         function loadProducts() {
             const products = JSON.parse(localStorage.getItem('products')) || [];
-            
+
             // Update total
             const totalEl = document.getElementById('totalProducts');
             if (totalEl) totalEl.textContent = products.length;
-            
+
             // Render admin list
             const adminList = document.getElementById('adminProductsList');
             if (adminList) {
                 if (products.length === 0) {
                     adminList.innerHTML = `
-                        <div class="empty-products">
-                            <i class="fas fa-box-open"></i>
+                        <div class="empty-products" style="color:var(--gray);">
+                            <i class="fas fa-box-open" style="color:rgba(255,255,255,0.1);"></i>
                             <p>No products added yet. Add your first product above!</p>
                         </div>
                     `;
@@ -1114,7 +1382,7 @@
                             <div class="info">
                                 <h4>${product.name}</h4>
                                 <p>${product.price} · ${product.category}</p>
-                                <p style="font-size:0.8rem; color:#6c757d;">
+                                <p style="font-size:0.8rem; color:var(--gray);">
                                     <i class="fas fa-phone"></i> ${product.contact}
                                 </p>
                             </div>
@@ -1127,7 +1395,7 @@
                     `).join('');
                 }
             }
-            
+
             // Render public page
             const grid = document.getElementById('productsGrid');
             if (grid) {
@@ -1147,20 +1415,10 @@
                                 <h3>${product.name}</h3>
                                 <div class="price">${product.price}</div>
                                 <p class="description">${product.description || ''}</p>
-                                <div class="contact-info">
-                                    <i class="fas fa-phone"></i>
-                                    <span>${product.contact}</span>
-                                </div>
-                                ${product.link ? `
-                                    <a href="${product.link}" target="_blank" class="btn btn-primary">
-                                        <i class="fas fa-external-link-alt"></i> Buy Now
-                                    </a>
-                                ` : `
-                                    <a href="https://wa.me/${product.contact.replace(/[^0-9]/g, '')}?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" 
-                                       target="_blank" class="btn btn-primary">
-                                        <i class="fab fa-whatsapp"></i> Contact Seller
-                                    </a>
-                                `}
+                                <a href="https://wa.me/${product.contact.replace(/[^0-9]/g, '')}?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" 
+                                   target="_blank" class="btn btn-whatsapp">
+                                    <i class="fab fa-whatsapp"></i> Contact on WhatsApp
+                                </a>
                             </div>
                         </div>
                     `).join('');
@@ -1171,7 +1429,7 @@
         // ===== ADD PRODUCT =====
         document.getElementById('productForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const product = {
                 name: document.getElementById('productName').value.trim(),
                 price: document.getElementById('productPrice').value.trim(),
@@ -1179,19 +1437,18 @@
                 category: document.getElementById('productCategory').value,
                 description: document.getElementById('productDesc').value.trim(),
                 image: document.getElementById('productImage').value.trim(),
-                link: document.getElementById('productLink').value.trim(),
                 id: Date.now()
             };
-            
+
             if (!product.name || !product.price || !product.contact || !product.image) {
-                alert('Please fill in all required fields (*)');
+                alert('⚠️ Please fill in all required fields (*)');
                 return;
             }
-            
+
             const products = JSON.parse(localStorage.getItem('products')) || [];
             products.push(product);
             localStorage.setItem('products', JSON.stringify(products));
-            
+
             document.getElementById('productForm').reset();
             loadProducts();
             alert('✅ Product added successfully!');
@@ -1199,7 +1456,7 @@
 
         // ===== DELETE PRODUCT =====
         function deleteProduct(index) {
-            if (confirm('Are you sure you want to delete this product?')) {
+            if (confirm('⚠️ Are you sure you want to delete this product?')) {
                 const products = JSON.parse(localStorage.getItem('products')) || [];
                 products.splice(index, 1);
                 localStorage.setItem('products', JSON.stringify(products));
@@ -1213,12 +1470,20 @@
             if (e.key === 'Enter') login();
         });
 
+        // ===== ESC KEY TO CLOSE LOGIN =====
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('loginOverlay').classList.remove('active');
+            }
+        });
+
         // ===== LOAD PRODUCTS ON PAGE LOAD =====
         loadProducts();
 
         console.log('✅ Website loaded successfully!');
         console.log('🔑 Admin password: mama111');
         console.log('📦 Click "Admin" in the menu to manage products');
+        console.log('💬 Products show WhatsApp contact button only');
     </script>
 
 </body>
