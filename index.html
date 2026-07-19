@@ -345,17 +345,6 @@
             font-size: 0.95rem;
             margin-bottom: 12px;
         }
-        .product-info .contact-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-        }
-        .product-info .contact-info i {
-            color: var(--primary);
-        }
         .product-info .btn {
             width: 100%;
         }
@@ -563,7 +552,6 @@
             display: block;
         }
 
-        /* Admin Header */
         .admin-header {
             background: var(--dark-card);
             padding: 16px 0;
@@ -585,26 +573,6 @@
             color: var(--primary);
         }
 
-        .admin-user {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: var(--gray);
-        }
-        .admin-user .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        /* Admin Stats */
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -635,7 +603,6 @@
             font-size: 0.9rem;
         }
 
-        /* Admin Cards */
         .admin-card {
             background: var(--dark-card);
             padding: 32px;
@@ -705,7 +672,41 @@
             font-size: 0.8rem;
         }
 
-        /* Admin Product List */
+        /* ===== IMAGE UPLOAD ===== */
+        .image-upload-box {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .image-upload-box:hover {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.05);
+        }
+        .image-upload-box i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 12px;
+        }
+        .image-upload-box p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        .image-upload-box .preview-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .image-upload-box input[type="file"] {
+            display: none;
+        }
+
+        /* ===== ADMIN PRODUCT LIST ===== */
         .admin-product-item {
             display: flex;
             align-items: center;
@@ -757,7 +758,7 @@
             color: var(--white);
         }
 
-        /* ===== LOGIN OVERLAY (PROFESSIONAL) ===== */
+        /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -850,7 +851,6 @@
             width: 100%;
         }
 
-        /* ===== BACK BUTTON ===== */
         .back-to-site {
             text-align: center;
             margin-top: 30px;
@@ -957,9 +957,7 @@
 </head>
 <body>
 
-    <!-- ============================================
-    HEADER
-    ============================================ -->
+    <!-- ===== HEADER ===== -->
     <header class="header" id="mainHeader">
         <div class="container">
             <div class="logo">
@@ -983,9 +981,7 @@
         </div>
     </header>
 
-    <!-- ============================================
-    LOGIN OVERLAY (No password showing!)
-    ============================================ -->
+    <!-- ===== LOGIN OVERLAY ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="lock-icon">
@@ -1004,9 +1000,7 @@
         </div>
     </div>
 
-    <!-- ============================================
-    HERO
-    ============================================ -->
+    <!-- ===== HERO ===== -->
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
@@ -1027,9 +1021,7 @@
         </div>
     </section>
 
-    <!-- ============================================
-    PRODUCTS
-    ============================================ -->
+    <!-- ===== PRODUCTS ===== -->
     <section class="products" id="products">
         <div class="container">
             <div class="section-header">
@@ -1043,9 +1035,7 @@
         </div>
     </section>
 
-    <!-- ============================================
-    ABOUT
-    ============================================ -->
+    <!-- ===== ABOUT ===== -->
     <section class="about" id="about">
         <div class="container">
             <div class="about-grid">
@@ -1076,9 +1066,7 @@
         </div>
     </section>
 
-    <!-- ============================================
-    CONTACT
-    ============================================ -->
+    <!-- ===== CONTACT ===== -->
     <section class="contact" id="contact">
         <div class="container">
             <div class="contact-box">
@@ -1109,13 +1097,11 @@
         </div>
     </section>
 
-    <!-- ============================================
-    ADMIN PANEL (PROFESSIONAL DARK)
-    ============================================ -->
+    <!-- ===== ADMIN PANEL ===== -->
     <section class="admin-panel" id="adminPanel">
         <div class="container">
 
-            <!-- Admin Stats -->
+            <!-- Stats -->
             <div class="admin-stats">
                 <div class="stat-card">
                     <i class="fas fa-boxes"></i>
@@ -1173,9 +1159,14 @@
                             <textarea id="productDesc" placeholder="Describe your product..." rows="3"></textarea>
                         </div>
                         <div class="form-group full-width">
-                            <label>Product Image URL *</label>
-                            <input type="text" id="productImage" required placeholder="https://images.unsplash.com/photo-..." />
-                            <small>Use Unsplash or any image URL</small>
+                            <label>Product Image *</label>
+                            <div class="image-upload-box" id="imageUploadBox">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Tap to select image from your phone</p>
+                                <img id="imagePreview" class="preview-image" style="display:none;" />
+                                <input type="file" id="productImageInput" accept="image/*" capture="environment" />
+                            </div>
+                            <small>Take a photo or choose from gallery</small>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -1202,9 +1193,7 @@
         </div>
     </section>
 
-    <!-- ============================================
-    FOOTER
-    ============================================ -->
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -1281,6 +1270,31 @@
             });
         });
 
+        // ===== IMAGE UPLOAD =====
+        const imageInput = document.getElementById('productImageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadBox = document.getElementById('imageUploadBox');
+        let uploadedImageData = null;
+
+        uploadBox.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedImageData = event.target.result;
+                    imagePreview.src = uploadedImageData;
+                    imagePreview.style.display = 'block';
+                    uploadBox.querySelector('i').style.display = 'none';
+                    uploadBox.querySelector('p').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         // ===== SHOW LOGIN =====
         function showLogin() {
             document.getElementById('loginOverlay').classList.add('active');
@@ -1303,14 +1317,12 @@
                 error.style.display = 'none';
                 loadProducts();
 
-                // Hide public sections
                 document.querySelector('.hero').style.display = 'none';
                 document.querySelector('.products').style.display = 'none';
                 document.querySelector('.about').style.display = 'none';
                 document.querySelector('.contact').style.display = 'none';
                 document.querySelector('.footer').style.display = 'none';
 
-                // Update header
                 const header = document.getElementById('mainHeader');
                 header.querySelector('.logo').innerHTML = `
                     <i class="fas fa-shield-alt"></i>
@@ -1319,7 +1331,6 @@
                 header.style.background = '#0a0a1a';
                 header.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
 
-                // Hide nav admin button
                 const adminBtn = document.querySelector('.nav-admin-btn');
                 if (adminBtn) adminBtn.style.display = 'none';
 
@@ -1334,14 +1345,12 @@
         function hideAdmin() {
             document.getElementById('adminPanel').classList.remove('active');
 
-            // Show public sections
             document.querySelector('.hero').style.display = 'block';
             document.querySelector('.products').style.display = 'block';
             document.querySelector('.about').style.display = 'block';
             document.querySelector('.contact').style.display = 'block';
             document.querySelector('.footer').style.display = 'block';
 
-            // Reset header
             const header = document.getElementById('mainHeader');
             header.querySelector('.logo').innerHTML = `
                 <i class="fas fa-rocket"></i>
@@ -1350,7 +1359,6 @@
             header.style.background = 'rgba(255, 255, 255, 0.95)';
             header.style.borderBottom = '1px solid rgba(0, 0, 0, 0.05)';
 
-            // Show nav admin button
             const adminBtn = document.querySelector('.nav-admin-btn');
             if (adminBtn) adminBtn.style.display = 'inline-block';
 
@@ -1361,11 +1369,9 @@
         function loadProducts() {
             const products = JSON.parse(localStorage.getItem('products')) || [];
 
-            // Update total
             const totalEl = document.getElementById('totalProducts');
             if (totalEl) totalEl.textContent = products.length;
 
-            // Render admin list
             const adminList = document.getElementById('adminProductsList');
             if (adminList) {
                 if (products.length === 0) {
@@ -1378,7 +1384,7 @@
                 } else {
                     adminList.innerHTML = products.map((product, index) => `
                         <div class="admin-product-item">
-                            <img src="${product.image || 'https://via.placeholder.com/60'}" alt="${product.name}" />
+                            <img src="${product.image}" alt="${product.name}" />
                             <div class="info">
                                 <h4>${product.name}</h4>
                                 <p>${product.price} · ${product.category}</p>
@@ -1396,7 +1402,6 @@
                 }
             }
 
-            // Render public page
             const grid = document.getElementById('productsGrid');
             if (grid) {
                 if (products.length === 0) {
@@ -1409,7 +1414,7 @@
                 } else {
                     grid.innerHTML = products.map(product => `
                         <div class="product-card">
-                            <img src="${product.image || 'https://via.placeholder.com/300x220'}" alt="${product.name}" />
+                            <img src="${product.image}" alt="${product.name}" />
                             <div class="product-info">
                                 <span class="category">${product.category || 'General'}</span>
                                 <h3>${product.name}</h3>
@@ -1430,17 +1435,22 @@
         document.getElementById('productForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
+            if (!uploadedImageData) {
+                alert('⚠️ Please select an image from your phone!');
+                return;
+            }
+
             const product = {
                 name: document.getElementById('productName').value.trim(),
                 price: document.getElementById('productPrice').value.trim(),
                 contact: document.getElementById('productContact').value.trim(),
                 category: document.getElementById('productCategory').value,
                 description: document.getElementById('productDesc').value.trim(),
-                image: document.getElementById('productImage').value.trim(),
+                image: uploadedImageData,
                 id: Date.now()
             };
 
-            if (!product.name || !product.price || !product.contact || !product.image) {
+            if (!product.name || !product.price || !product.contact) {
                 alert('⚠️ Please fill in all required fields (*)');
                 return;
             }
@@ -1450,8 +1460,14 @@
             localStorage.setItem('products', JSON.stringify(products));
 
             document.getElementById('productForm').reset();
+            uploadedImageData = null;
+            imagePreview.style.display = 'none';
+            imagePreview.src = '';
+            document.querySelector('#imageUploadBox i').style.display = 'block';
+            document.querySelector('#imageUploadBox p').style.display = 'block';
+
             loadProducts();
-            alert('✅ Product added successfully!');
+            alert('✅ Product added successfully with your image!');
         });
 
         // ===== DELETE PRODUCT =====
@@ -1482,7 +1498,7 @@
 
         console.log('✅ Website loaded successfully!');
         console.log('🔑 Admin password: mama111');
-        console.log('📦 Click "Admin" in the menu to manage products');
+        console.log('📸 You can upload images directly from your phone!');
         console.log('💬 Products show WhatsApp contact button only');
     </script>
 
