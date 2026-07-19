@@ -540,7 +540,7 @@
         }
 
         /* ============================================
-                   PROFESSIONAL ADMIN PANEL
+                   ADMIN PANEL
                    ============================================ */
         .admin-panel {
             display: none;
@@ -550,27 +550,6 @@
         }
         .admin-panel.active {
             display: block;
-        }
-
-        .admin-header {
-            background: var(--dark-card);
-            padding: 16px 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .admin-header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .admin-header .logo {
-            color: var(--white);
-        }
-        .admin-header .logo span {
-            color: var(--primary);
         }
 
         .admin-stats {
@@ -672,7 +651,7 @@
             font-size: 0.8rem;
         }
 
-        /* ===== IMAGE UPLOAD ===== */
+        /* ===== IMAGE UPLOAD - GALLERY ONLY ===== */
         .image-upload-box {
             border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 12px;
@@ -681,6 +660,11 @@
             cursor: pointer;
             transition: var(--transition);
             background: rgba(255, 255, 255, 0.03);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .image-upload-box:hover {
             border-color: var(--primary);
@@ -698,9 +682,13 @@
         .image-upload-box .preview-image {
             width: 100%;
             max-height: 200px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 8px;
             margin-top: 12px;
+            display: none;
+        }
+        .image-upload-box .preview-image.show {
+            display: block;
         }
         .image-upload-box input[type="file"] {
             display: none;
@@ -1152,7 +1140,7 @@
                         <div class="form-group">
                             <label>WhatsApp Number *</label>
                             <input type="text" id="productContact" required placeholder="e.g., 2349133750885" />
-                            <small>Enter number without + or spaces</small>
+                            <small>Enter number without + or spaces (e.g., 2349133750885)</small>
                         </div>
                         <div class="form-group full-width">
                             <label>Description</label>
@@ -1161,12 +1149,12 @@
                         <div class="form-group full-width">
                             <label>Product Image *</label>
                             <div class="image-upload-box" id="imageUploadBox">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <p>Tap to select image from your phone</p>
-                                <img id="imagePreview" class="preview-image" style="display:none;" />
-                                <input type="file" id="productImageInput" accept="image/*" capture="environment" />
+                                <i class="fas fa-images"></i>
+                                <p>Tap to select image from gallery</p>
+                                <img id="imagePreview" class="preview-image" />
+                                <input type="file" id="productImageInput" accept="image/*" />
                             </div>
-                            <small>Take a photo or choose from gallery</small>
+                            <small>Choose an image from your gallery (JPG, PNG, etc.)</small>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -1270,7 +1258,7 @@
             });
         });
 
-        // ===== IMAGE UPLOAD =====
+        // ===== IMAGE UPLOAD - GALLERY ONLY =====
         const imageInput = document.getElementById('productImageInput');
         const imagePreview = document.getElementById('imagePreview');
         const uploadBox = document.getElementById('imageUploadBox');
@@ -1283,11 +1271,18 @@
         imageInput.addEventListener('change', function(e) {
             const file = this.files[0];
             if (file) {
+                // Check if image
+                if (!file.type.startsWith('image/')) {
+                    alert('⚠️ Please select an image file (JPG, PNG, etc.)');
+                    this.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     uploadedImageData = event.target.result;
                     imagePreview.src = uploadedImageData;
-                    imagePreview.style.display = 'block';
+                    imagePreview.classList.add('show');
                     uploadBox.querySelector('i').style.display = 'none';
                     uploadBox.querySelector('p').style.display = 'none';
                 };
@@ -1369,9 +1364,11 @@
         function loadProducts() {
             const products = JSON.parse(localStorage.getItem('products')) || [];
 
+            // Update total
             const totalEl = document.getElementById('totalProducts');
             if (totalEl) totalEl.textContent = products.length;
 
+            // Render admin list
             const adminList = document.getElementById('adminProductsList');
             if (adminList) {
                 if (products.length === 0) {
@@ -1402,6 +1399,7 @@
                 }
             }
 
+            // Render public page - FIXED: images now show properly
             const grid = document.getElementById('productsGrid');
             if (grid) {
                 if (products.length === 0) {
@@ -1436,7 +1434,7 @@
             e.preventDefault();
 
             if (!uploadedImageData) {
-                alert('⚠️ Please select an image from your phone!');
+                alert('⚠️ Please select an image from your gallery!');
                 return;
             }
 
@@ -1455,19 +1453,27 @@
                 return;
             }
 
+            // Validate WhatsApp number
+            const cleanNumber = product.contact.replace(/[^0-9]/g, '');
+            if (cleanNumber.length < 10) {
+                alert('⚠️ Please enter a valid phone number (minimum 10 digits)');
+                return;
+            }
+
             const products = JSON.parse(localStorage.getItem('products')) || [];
             products.push(product);
             localStorage.setItem('products', JSON.stringify(products));
 
+            // Reset form
             document.getElementById('productForm').reset();
             uploadedImageData = null;
-            imagePreview.style.display = 'none';
+            imagePreview.classList.remove('show');
             imagePreview.src = '';
-            document.querySelector('#imageUploadBox i').style.display = 'block';
-            document.querySelector('#imageUploadBox p').style.display = 'block';
+            uploadBox.querySelector('i').style.display = 'block';
+            uploadBox.querySelector('p').style.display = 'block';
 
             loadProducts();
-            alert('✅ Product added successfully with your image!');
+            alert('✅ Product added successfully! Your image is saved.');
         });
 
         // ===== DELETE PRODUCT =====
@@ -1498,8 +1504,8 @@
 
         console.log('✅ Website loaded successfully!');
         console.log('🔑 Admin password: mama111');
-        console.log('📸 You can upload images directly from your phone!');
-        console.log('💬 Products show WhatsApp contact button only');
+        console.log('📸 Upload images from your gallery');
+        console.log('💬 WhatsApp: Enter number without + (e.g., 2349133750885)');
     </script>
 
 </body>
