@@ -997,7 +997,7 @@
             <button onclick="login()" class="btn btn-primary">
                 <i class="fas fa-unlock"></i> Unlock Panel
             </button>
-            <p class="login-error" id="loginError">❌ Invalid password. Please try again.</p>
+            <p class="login-error" id="loginError">Invalid password. Please try again.</p>
         </div>
     </div>
 
@@ -1005,9 +1005,9 @@
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-                <span class="badge">🔥 Top Affiliate Deals</span>
-                <h1>Find The Best <span>Products</span> & Earn</h1>
-                <p>Discover hand-picked affiliate products with exclusive discounts. Start earning today!</p>
+                <span class="badge">Top Affiliate Deals</span>
+                <h1>Find The Best <span>Products</span></h1>
+                <p>Discover hand-picked affiliate products with exclusive discounts. Start shopping today!</p>
                 <div class="hero-buttons">
                     <a href="#products" class="btn btn-primary">
                         <i class="fas fa-shopping-bag"></i> Browse Products
@@ -1028,10 +1028,10 @@
             <div class="section-header">
                 <span class="section-tag">Our Products</span>
                 <h2>Featured <span>Deals</span></h2>
-                <p>Hand-picked products with the best affiliate commissions</p>
+                <p>Hand-picked products with the best prices</p>
             </div>
             <div class="products-grid" id="productsGrid">
-                <!-- Products loaded from localStorage -->
+                <!-- Products will be loaded from localStorage -->
             </div>
         </div>
     </section>
@@ -1138,7 +1138,7 @@
                         </div>
                         <div class="form-group">
                             <label>Price *</label>
-                            <input type="text" id="productPrice" required placeholder="e.g., $49.99" />
+                            <input type="text" id="productPrice" required placeholder="e.g., ₦15,000" />
                         </div>
                         <div class="form-group">
                             <label>Category</label>
@@ -1153,7 +1153,7 @@
                         <div class="form-group">
                             <label>WhatsApp Number *</label>
                             <input type="text" id="productContact" required placeholder="e.g., 2349133750885" />
-                            <small>Enter number without + or spaces (e.g., 2349133750885)</small>
+                            <small>Enter number without + or spaces</small>
                         </div>
                         <div class="form-group full-width">
                             <label>Description</label>
@@ -1235,6 +1235,46 @@
         // ===== ADMIN PASSWORD =====
         const ADMIN_PASSWORD = "mama111";
 
+        // ===== DEFAULT SAMPLE PRODUCTS (First-time visitors see these) =====
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 1,
+                name: "Wireless Bluetooth Headphones",
+                price: "₦15,000",
+                contact: "2349133750885",
+                category: "Electronics",
+                description: "High quality wireless headphones with noise cancellation. 20hr battery life.",
+                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=300&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Smart Watch Series 7",
+                price: "₦25,000",
+                contact: "2349133750885",
+                category: "Electronics",
+                description: "Premium smartwatch with heart rate monitor, GPS, and fitness tracking.",
+                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&h=300&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Designer Handbag",
+                price: "₦12,000",
+                contact: "2349133750885",
+                category: "Fashion",
+                description: "Elegant designer handbag perfect for any occasion. High quality material.",
+                image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=300&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Home Theater System",
+                price: "₦45,000",
+                contact: "2349133750885",
+                category: "Electronics",
+                description: "5.1 surround sound home theater system. Perfect for movie nights.",
+                image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=300&h=300&fit=crop"
+            }
+        ];
+
         // ===== HAMBURGER MENU =====
         const hamburger = document.getElementById('hamburger');
         const nav = document.querySelector('.nav');
@@ -1271,6 +1311,29 @@
             });
         });
 
+        // ===== PRODUCT STORAGE FUNCTIONS =====
+
+        // Get products from localStorage or initialize with defaults
+        function getProducts() {
+            const stored = localStorage.getItem('products');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && parsed.length > 0) {
+                        return parsed;
+                    }
+                } catch(e) {}
+            }
+            // If nothing in localStorage, save defaults and return them
+            localStorage.setItem('products', JSON.stringify(DEFAULT_PRODUCTS));
+            return DEFAULT_PRODUCTS;
+        }
+
+        // Save products to localStorage
+        function saveProducts(products) {
+            localStorage.setItem('products', JSON.stringify(products));
+        }
+
         // ===== IMAGE UPLOAD =====
         const imageInput = document.getElementById('productImageInput');
         const imagePreview = document.getElementById('imagePreview');
@@ -1285,7 +1348,7 @@
             const file = this.files[0];
             if (file) {
                 if (!file.type.startsWith('image/')) {
-                    alert('⚠️ Please select an image file (JPG, PNG, etc.)');
+                    alert('Please select an image file (JPG, PNG, etc.)');
                     this.value = '';
                     return;
                 }
@@ -1372,9 +1435,9 @@
             location.reload();
         }
 
-        // ===== LOAD PRODUCTS =====
+        // ===== LOAD PRODUCTS (Public & Admin) =====
         function loadProducts() {
-            const products = JSON.parse(localStorage.getItem('products')) || [];
+            const products = getProducts();
 
             // Update total
             const totalEl = document.getElementById('totalProducts');
@@ -1411,7 +1474,7 @@
                 }
             }
 
-            // Render public page - FIXED WhatsApp link
+            // Render public page
             const grid = document.getElementById('productsGrid');
             if (grid) {
                 if (products.length === 0) {
@@ -1423,16 +1486,13 @@
                     `;
                 } else {
                     grid.innerHTML = products.map(product => {
-                        // Clean phone number - remove all non-digits
                         const cleanNumber = product.contact.replace(/[^0-9]/g, '');
-                        // Ensure it has country code (if less than 10 digits, assume Nigeria +234)
                         let phoneNumber = cleanNumber;
                         if (phoneNumber.length === 10) {
                             phoneNumber = '234' + phoneNumber;
                         } else if (phoneNumber.length === 11 && phoneNumber.startsWith('0')) {
                             phoneNumber = '234' + phoneNumber.substring(1);
                         }
-                        // WhatsApp link with proper format
                         const waLink = `https://wa.me/${phoneNumber}?text=Hello%2C%20I'm%20interested%20in%20${encodeURIComponent(product.name)}`;
                         
                         return `
@@ -1443,10 +1503,7 @@
                                     <h3>${product.name}</h3>
                                     <div class="price">${product.price}</div>
                                     <p class="description">${product.description || ''}</p>
-                                    <a href="${waLink}" 
-                                       target="_blank" 
-                                       class="btn-whatsapp"
-                                       onclick="openWhatsApp('${phoneNumber}', '${product.name}')">
+                                    <a href="${waLink}" target="_blank" class="btn-whatsapp">
                                         <i class="fab fa-whatsapp"></i> Contact on WhatsApp
                                     </a>
                                 </div>
@@ -1457,55 +1514,40 @@
             }
         }
 
-        // ===== OPEN WHATSAPP =====
-        function openWhatsApp(number, productName) {
-            // Clean number
-            let cleanNumber = number.replace(/[^0-9]/g, '');
-            if (cleanNumber.length === 10) {
-                cleanNumber = '234' + cleanNumber;
-            } else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) {
-                cleanNumber = '234' + cleanNumber.substring(1);
-            }
-            const message = `Hello%2C%20I'm%20interested%20in%20${encodeURIComponent(productName)}`;
-            const url = `https://wa.me/${cleanNumber}?text=${message}`;
-            window.open(url, '_blank');
-            return false;
-        }
-
         // ===== ADD PRODUCT =====
         document.getElementById('productForm').addEventListener('submit', (e) => {
             e.preventDefault();
 
             if (!uploadedImageData) {
-                alert('⚠️ Please select an image from your gallery!');
+                alert('Please select an image from your gallery!');
                 return;
             }
 
-            const product = {
+            const products = getProducts();
+
+            const newProduct = {
+                id: Date.now(),
                 name: document.getElementById('productName').value.trim(),
                 price: document.getElementById('productPrice').value.trim(),
                 contact: document.getElementById('productContact').value.trim(),
                 category: document.getElementById('productCategory').value,
                 description: document.getElementById('productDesc').value.trim(),
-                image: uploadedImageData,
-                id: Date.now()
+                image: uploadedImageData
             };
 
-            if (!product.name || !product.price || !product.contact) {
-                alert('⚠️ Please fill in all required fields (*)');
+            if (!newProduct.name || !newProduct.price || !newProduct.contact) {
+                alert('Please fill in all required fields (*)');
                 return;
             }
 
-            // Validate WhatsApp number
-            const cleanNumber = product.contact.replace(/[^0-9]/g, '');
+            const cleanNumber = newProduct.contact.replace(/[^0-9]/g, '');
             if (cleanNumber.length < 10) {
-                alert('⚠️ Please enter a valid phone number (minimum 10 digits)');
+                alert('Please enter a valid phone number (minimum 10 digits)');
                 return;
             }
 
-            const products = JSON.parse(localStorage.getItem('products')) || [];
-            products.push(product);
-            localStorage.setItem('products', JSON.stringify(products));
+            products.push(newProduct);
+            saveProducts(products);
 
             // Reset form
             document.getElementById('productForm').reset();
@@ -1516,17 +1558,17 @@
             uploadBox.querySelector('p').style.display = 'block';
 
             loadProducts();
-            alert('✅ Product added successfully!');
+            alert('Product added successfully! Everyone can now see it!');
         });
 
         // ===== DELETE PRODUCT =====
         function deleteProduct(index) {
-            if (confirm('⚠️ Are you sure you want to delete this product?')) {
-                const products = JSON.parse(localStorage.getItem('products')) || [];
+            if (confirm('Are you sure you want to delete this product?')) {
+                const products = getProducts();
                 products.splice(index, 1);
-                localStorage.setItem('products', JSON.stringify(products));
+                saveProducts(products);
                 loadProducts();
-                alert('🗑️ Product deleted successfully!');
+                alert('Product deleted successfully!');
             }
         }
 
@@ -1545,10 +1587,10 @@
         // ===== LOAD PRODUCTS ON PAGE LOAD =====
         loadProducts();
 
-        console.log('✅ Website loaded successfully!');
-        console.log('🔑 Admin password: mama111');
-        console.log('📸 Upload images from your gallery');
-        console.log('💬 WhatsApp: Enter number without + (e.g., 2349133750885)');
+        console.log(' Website loaded successfully!');
+        console.log(' Admin password: mama111');
+        console.log(' Products are saved in localStorage and show for everyone!');
+        console.log(' Add/Delete products from the Admin Panel!');
     </script>
 
 </body>
