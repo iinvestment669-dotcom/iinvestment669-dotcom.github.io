@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureBank | Your Trusted Bank</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ============================================
+                   ALL CSS
+                   ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0052CC;
+            --primary-light: #0065FF;
+            --primary-dark: #003D99;
+            --success: #00C853;
+            --danger: #FF1744;
+            --warning: #FFC107;
+            --dark: #0A1628;
+            --dark-card: #111F3D;
+            --light: #F0F4F8;
+            --gray: #6B7A8D;
+            --white: #FFFFFF;
+            --shadow: 0 8px 32px rgba(0, 82, 204, 0.15);
+            --radius: 16px;
+            --transition: 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 4px 16px rgba(0, 82, 204, 0.35);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 82, 204, 0.45);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+        .btn-success:hover {
+            background: #00A845;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+        .btn-danger:hover {
+            background: #D5001A;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid #e0e0e0;
+        }
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ============================================
+                   HEADER
+                   ============================================ */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .logo i {
+            font-size: 1.8rem;
+        }
+        .logo span {
+            color: var(--dark);
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav ul li a {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--gray);
+            transition: var(--transition);
+            position: relative;
+        }
+        .nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        .nav ul li a:hover::after,
+        .nav ul li a.active::after {
+            width: 100%;
+        }
+        .nav ul li a:hover,
+        .nav ul li a.active {
+            color: var(--dark);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: var(--dark);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ============================================
+                   HERO
+                   ============================================ */
+        .hero {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, #E8F0FE 0%, #D4E4FF 100%);
+            display: flex;
+            align-items: center;
+        }
+
+        .hero .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+        .hero-content h1 span {
+            color: var(--primary);
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--gray);
+            max-width: 500px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        /* ============================================
+                   LOGIN / REGISTER
+                   ============================================ */
+        .auth-section {
+            padding: 100px 0 60px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #E8F0FE 0%, #D4E4FF 100%);
+        }
+
+        .auth-container {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 48px 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: var(--shadow);
+        }
+
+        .auth-container .logo-center {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .auth-container .logo-center i {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        .auth-container .logo-center h2 {
+            font-size: 1.8rem;
+            margin-top: 8px;
+        }
+        .auth-container .logo-center h2 span {
+            color: var(--primary);
+        }
+        .auth-container .logo-center p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .auth-container .form-group {
+            margin-bottom: 16px;
+        }
+        .auth-container .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        .auth-container .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+        .auth-container .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .auth-container .btn {
+            margin-top: 8px;
+        }
+
+        .auth-container .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        .auth-container .auth-footer a {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+        .otp-input-group input {
+            width: 50px;
+            height: 56px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        .otp-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============================================
+                   DASHBOARD
+                   ============================================ */
+        .dashboard {
+            display: none;
+            padding: 100px 0 60px;
+            background: var(--light);
+            min-height: 100vh;
+        }
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .dashboard-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+        .dashboard-header h2 span {
+            color: var(--primary);
+        }
+        .dashboard-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dashboard-header .user-info .avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .dashboard-header .user-info .name {
+            font-weight: 600;
+        }
+        .dashboard-header .user-info .role {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius);
+            padding: 32px;
+            color: var(--white);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        .balance-card .balance-item h4 {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+        .balance-card .balance-item h2 {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .balance-card .balance-item small {
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+        .quick-action {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .quick-action:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+        .quick-action i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .quick-action span {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .quick-action .claimed {
+            color: var(--success);
+        }
+        .quick-action .unclaimed {
+            color: var(--warning);
+        }
+        .quick-action .locked {
+            color: var(--danger);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e0e0e0;
+        }
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h3 i {
+            color: var(--primary);
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        .transaction-item .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .transaction-item .icon.credit {
+            background: rgba(0, 200, 83, 0.1);
+            color: var(--success);
+        }
+        .transaction-item .icon.debit {
+            background: rgba(255, 23, 68, 0.1);
+            color: var(--danger);
+        }
+        .transaction-item .icon.claim {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+        .transaction-item .info {
+            flex: 1;
+        }
+        .transaction-item .info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .transaction-item .info p {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        .transaction-item .amount {
+            font-weight: 700;
+        }
+        .transaction-item .amount.credit {
+            color: var(--success);
+        }
+        .transaction-item .amount.debit {
+            color: var(--danger);
+        }
+        .transaction-item .amount.claim {
+            color: var(--warning);
+        }
+
+        /* ============================================
+                   ADMIN PANEL
+                   ============================================ */
+        .admin-panel {
+            display: none;
+            padding: 100px 0 60px;
+            background: var(--dark);
+            min-height: 100vh;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-header {
+            background: var(--dark-card);
+            padding: 16px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .admin-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-header .logo {
+            color: var(--white);
+        }
+        .admin-header .logo span {
+            color: var(--primary);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--dark-card);
+            padding: 24px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            opacity: 0.7;
+        }
+        .stat-card h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--white);
+        }
+        .stat-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .admin-card {
+            background: var(--dark-card);
+            padding: 32px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 30px;
+        }
+        .admin-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--white);
+        }
+        .admin-card h2 i {
+            color: var(--primary);
+        }
+
+        .admin-user-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--white);
+        }
+        .admin-user-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .admin-user-item .info {
+            flex: 1;
+        }
+        .admin-user-item .info h4 {
+            font-size: 1rem;
+        }
+        .admin-user-item .info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        .admin-user-item .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .admin-user-item .status.active {
+            background: rgba(0, 200, 83, 0.2);
+            color: var(--success);
+        }
+        .admin-user-item .status.inactive {
+            background: rgba(255, 23, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .back-to-site {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-to-site .btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gray);
+        }
+        .back-to-site .btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ============================================
+                   ADMIN LOGIN
+                   ============================================ */
+        .admin-login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .admin-login-overlay.active {
+            display: flex;
+        }
+
+        .admin-login-box {
+            background: var(--dark-card);
+            padding: 48px 40px;
+            border-radius: var(--radius);
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+        .admin-login-box .lock-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(108, 99, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        .admin-login-box h2 {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            color: var(--white);
+        }
+        .admin-login-box p {
+            color: var(--gray);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .admin-login-box .input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        .admin-login-box .input-group:focus-within {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .admin-login-box .input-group i {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        .admin-login-box .input-group input {
+            border: none;
+            background: none;
+            padding: 14px 12px;
+            font-size: 1rem;
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+            color: var(--white);
+        }
+        .admin-login-box .input-group input::placeholder {
+            color: var(--gray);
+        }
+
+        .admin-login-error {
+            color: #ff4444;
+            margin-top: 12px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .admin-login-box .btn {
+            width: 100%;
+        }
+
+        /* ============================================
+                   TOAST
+                   ============================================ */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 0.95rem;
+            z-index: 99999;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            max-width: 400px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background: var(--success);
+        }
+        .toast.error {
+            background: var(--danger);
+        }
+        .toast.info {
+            background: var(--primary);
+        }
+        .toast.warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        /* ============================================
+                   FOOTER
+                   ============================================ */
+        .footer {
+            background: var(--dark);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 40px 0 20px;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .footer-brand i {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            margin: 8px 0;
+        }
+        .footer-brand h3 span {
+            color: var(--primary);
+        }
+        .footer-links h4 {
+            color: var(--white);
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+        .footer-links ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .footer-links ul li a {
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+        .footer-links ul li a:hover {
+            color: var(--primary);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 24px;
+            font-size: 0.85rem;
+        }
+
+        /* ============================================
+                   RESPONSIVE
+                   ============================================ */
+        @media (max-width: 1024px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-content p {
+                margin: 0 auto 24px;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .hero-image {
+                display: none;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .balance-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                padding: 24px;
+                box-shadow: var(--shadow);
+            }
+            .nav.open {
+                display: block;
+            }
+            .nav ul {
+                flex-direction: column;
+                gap: 16px;
+                align-items: center;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .quick-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+            .auth-container {
+                padding: 32px 24px;
+                margin: 0 16px;
+            }
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            .balance-card .balance-item h2 {
+                font-size: 1.5rem;
+            }
+            .otp-input-group input {
+                width: 40px;
+                height: 48px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================
+    HEADER
+    ============================================ -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-building-columns"></i>
+                <span>Secure<span style="color:var(--primary);">Bank</span></span>
+            </div>
+            <nav class="nav" id="nav">
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#" onclick="showAuth()">Login</a></li>
+                    <li><a href="#" onclick="showAdminLogin()" style="color:var(--primary);font-weight:600;"><i class="fas fa-shield-alt"></i> Admin</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    HERO SECTION
+    ============================================ -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Banking Made <span>Simple</span> &amp; <span>Secure</span></h1>
+                <p>Experience the future of banking with SecureBank. Transfer money, claim daily bonuses, and manage your finances all in one place.</p>
+                <div class="hero-buttons">
+                    <button onclick="showAuth()" class="btn btn-primary btn-lg"><i class="fas fa-user-plus"></i> Get Started</button>
+                    <a href="#features" class="btn btn-secondary btn-lg">Learn More</a>
+                </div>
+                <div style="margin-top:30px;display:flex;gap:40px;flex-wrap:wrap;">
+                    <div><h3 style="font-size:1.5rem;color:var(--primary);">₦1,000</h3><p style="color:var(--gray);font-size:0.85rem;">Daily Claim</p></div>
+                    <div><h3 style="font-size:1.5rem;color:var(--primary);">9:00 AM</h3><p style="color:var(--gray);font-size:0.85rem;">Claim Time</p></div>
+                    <div><h3 style="font-size:1.5rem;color:var(--primary);">🔒</h3><p style="color:var(--gray);font-size:0.85rem;">Withdrawal Lock until Dec</p></div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop&crop=center" alt="Banking" />
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    FEATURES SECTION
+    ============================================ -->
+    <section id="features" style="padding:80px 0;background:var(--white);">
+        <div class="container">
+            <div style="text-align:center;margin-bottom:60px;">
+                <span style="display:inline-block;background:rgba(0,82,204,0.1);color:var(--primary);padding:4px 16px;border-radius:50px;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;">Features</span>
+                <h2 style="font-size:2.6rem;font-weight:800;margin-top:8px;">Why Choose <span style="color:var(--primary);">SecureBank</span></h2>
+                <p style="color:var(--gray);max-width:600px;margin:8px auto 0;">We offer the best banking experience with daily rewards and secure transactions.</p>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;">
+                <div style="background:var(--light);padding:32px;border-radius:var(--radius);text-align:center;transition:var(--transition);">
+                    <div style="width:64px;height:64px;background:rgba(0,82,204,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem;color:var(--primary);"><i class="fas fa-gift"></i></div>
+                    <h3 style="font-size:1.1rem;font-weight:700;">Daily ₦1,000</h3>
+                    <p style="color:var(--gray);font-size:0.95rem;">Claim ₦1,000 every day at 9:00 AM. Don't miss out!</p>
+                </div>
+                <div style="background:var(--light);padding:32px;border-radius:var(--radius);text-align:center;transition:var(--transition);">
+                    <div style="width:64px;height:64px;background:rgba(0,82,204,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem;color:var(--primary);"><i class="fas fa-lock"></i></div>
+                    <h3 style="font-size:1.1rem;font-weight:700;">Secure Savings</h3>
+                    <p style="color:var(--gray);font-size:0.95rem;">Your money is safe with us. Withdrawal lock until December.</p>
+                </div>
+                <div style="background:var(--light);padding:32px;border-radius:var(--radius);text-align:center;transition:var(--transition);">
+                    <div style="width:64px;height:64px;background:rgba(0,82,204,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem;color:var(--primary);"><i class="fas fa-mobile-screen"></i></div>
+                    <h3 style="font-size:1.1rem;font-weight:700;">Easy Access</h3>
+                    <p style="color:var(--gray);font-size:0.95rem;">Access your account anytime, anywhere with our mobile-friendly platform.</p>
+                </div>
+                <div style="background:var(--light);padding:32px;border-radius:var(--radius);text-align:center;transition:var(--transition);">
+                    <div style="width:64px;height:64px;background:rgba(0,82,204,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem;color:var(--primary);"><i class="fas fa-headset"></i></div>
+                    <h3 style="font-size:1.1rem;font-weight:700;">24/7 Support</h3>
+                    <p style="color:var(--gray);font-size:0.95rem;">Our support team is always available to help you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    AUTH SECTION (Login/Register)
+    ============================================ -->
+    <section class="auth-section hidden" id="authSection">
+        <div class="auth-container" id="authContainer">
+            <div class="logo-center">
+                <i class="fas fa-building-columns"></i>
+                <h2>Secure<span>Bank</span></h2>
+                <p id="authSubtitle">Create your account to get started</p>
+            </div>
+
+            <!-- Register Form -->
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Enter your full name" required />
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" placeholder="Enter your email" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                <div class="auth-footer">
+                    Already have an account? <a onclick="switchAuth('login')">Login here</a>
+                </div>
+            </form>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="hidden">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Send OTP</button>
+                <div class="auth-footer">
+                    Don't have an account? <a onclick="switchAuth('register')">Create one</a>
+                </div>
+            </form>
+
+            <!-- OTP Verification -->
+            <div id="otpSection" class="hidden">
+                <p style="text-align:center;color:var(--gray);margin-bottom:16px;">Enter the 6-digit code sent to your email</p>
+                <div class="otp-input-group">
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                    <input type="text" maxlength="1" class="otp-input" />
+                </div>
+                <button onclick="verifyOTP()" class="btn btn-success btn-block">Verify OTP</button>
+                <div class="auth-footer">
+                    Didn't receive code? <a onclick="resendOTP()">Resend</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    DASHBOARD
+    ============================================ -->
+    <section class="dashboard" id="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <div>
+                    <h2>Welcome, <span id="userName">User</span> 👋</h2>
+                    <p style="color:var(--gray);">Your daily claim is waiting for you!</p>
+                </div>
+                <div class="user-info">
+                    <div>
+                        <div class="name" id="userDisplayName">User</div>
+                        <div class="role" id="userEmail">user@email.com</div>
+                    </div>
+                    <div class="avatar" id="userAvatar">U</div>
+                </div>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="balance-card">
+                <div class="balance-item">
+                    <h4>Total Balance</h4>
+                    <h2 id="totalBalance">₦0.00</h2>
+                    <small>Available balance</small>
+                </div>
+                <div class="balance-item">
+                    <h4>Today's Claim</h4>
+                    <h2 id="todayClaim">₦1,000</h2>
+                    <small id="claimStatus">⏳ Not claimed yet</small>
+                </div>
+                <div class="balance-item">
+                    <h4>Withdrawal Status</h4>
+                    <h2>🔒 Locked</h2>
+                    <small>Available: December 2026</small>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action" id="claimBtn" onclick="claimDaily()">
+                    <i class="fas fa-gift"></i>
+                    <span>Claim ₦1,000</span>
+                    <small style="display:block;font-size:0.7rem;color:var(--gray);">Daily at 9:00 AM</small>
+                </div>
+                <div class="quick-action" style="opacity:0.5;cursor:not-allowed;">
+                    <i class="fas fa-arrow-up" style="color:var(--danger);"></i>
+                    <span style="color:var(--danger);">Withdraw</span>
+                    <small style="display:block;font-size:0.7rem;color:var(--gray);">🔒 Locked until Dec</small>
+                </div>
+                <div class="quick-action" onclick="viewHistory()">
+                    <i class="fas fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </div>
+                <div class="quick-action" onclick="logoutUser()">
+                    <i class="fas fa-sign-out-alt" style="color:var(--danger);"></i>
+                    <span style="color:var(--danger);">Logout</span>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3><i class="fas fa-clock-rotate-left"></i> Transaction History</h3>
+                    <div id="transactionsList">
+                        <p style="color:var(--gray);text-align:center;padding:20px;">No transactions yet. Start by claiming your daily bonus!</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-info-circle"></i> Account Info</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div style="background:var(--light);padding:12px;border-radius:8px;">
+                            <p style="font-size:0.7rem;color:var(--gray);">Total Claimed</p>
+                            <h4 id="totalClaimed">₦0</h4>
+                        </div>
+                        <div style="background:var(--light);padding:12px;border-radius:8px;">
+                            <p style="font-size:0.7rem;color:var(--gray);">Days Active</p>
+                            <h4 id="daysActive">1</h4>
+                        </div>
+                        <div style="background:var(--light);padding:12px;border-radius:8px;grid-column:1/-1;">
+                            <p style="font-size:0.7rem;color:var(--gray);">Next Claim</p>
+                            <h4 id="nextClaimTime">Tomorrow 9:00 AM</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    ADMIN LOGIN OVERLAY
+    ============================================ -->
+    <div class="admin-login-overlay" id="adminLoginOverlay">
+        <div class="admin-login-box">
+            <div class="lock-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2>Admin Access</h2>
+            <p>Enter your credentials to continue</p>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="adminName" placeholder="Enter username..." />
+            </div>
+            <div class="input-group">
+                <i class="fas fa-key"></i>
+                <input type="password" id="adminPassword" placeholder="Enter password..." />
+            </div>
+            <button onclick="adminLogin()" class="btn btn-primary">
+                <i class="fas fa-unlock"></i> Unlock Panel
+            </button>
+            <p class="admin-login-error" id="adminLoginError">❌ Invalid credentials. Try again.</p>
+        </div>
+    </div>
+
+    <!-- ============================================
+    ADMIN PANEL
+    ============================================ -->
+    <section class="admin-panel" id="adminPanel">
+        <div class="container">
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <h3 id="adminTotalUsers">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gift"></i>
+                    <div>
+                        <h3 id="adminTotalClaims">0</h3>
+                        <p>Total Claims</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill"></i>
+                    <div>
+                        <h3 id="adminTotalAmount">₦0</h3>
+                        <p>Total Disbursed</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h2><i class="fas fa-users"></i> All Users</h2>
+                <div id="adminUsersList">
+                    <p style="color:var(--gray);text-align:center;padding:20px;">No users registered yet.</p>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h2><i class="fas fa-clock-rotate-left"></i> All Transactions</h2>
+                <div id="adminTransactionsList">
+                    <p style="color:var(--gray);text-align:center;padding:20px;">No transactions yet.</p>
+                </div>
+            </div>
+
+            <div class="back-to-site">
+                <button onclick="adminLogout()" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Site
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    FOOTER
+    ============================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-building-columns"></i>
+                    <h3>Secure<span>Bank</span></h3>
+                    <p>Your trusted banking partner. Secure, fast, and reliable.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#" onclick="showAuth()">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SecureBank. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+    JAVASCRIPT
+    ============================================ -->
+    <script>
+        // ============================================
+        // DATABASE (LocalStorage)
+        // ============================================
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('bank_users')) || [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('bank_users', JSON.stringify(users));
+        }
+
+        function getTransactions() {
+            return JSON.parse(localStorage.getItem('bank_transactions')) || [];
+        }
+
+        function saveTransactions(transactions) {
+            localStorage.setItem('bank_transactions', JSON.stringify(transactions));
+        }
+
+        function getClaims() {
+            return JSON.parse(localStorage.getItem('bank_claims')) || {};
+        }
+
+        function saveClaims(claims) {
+            localStorage.setItem('bank_claims', JSON.stringify(claims));
+        }
+
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('bank_current_user'));
+        }
+
+        function setCurrentUser(user) {
+            localStorage.setItem('bank_current_user', JSON.stringify(user));
+        }
+
+        function clearCurrentUser() {
+            localStorage.removeItem('bank_current_user');
+        }
+
+        // ============================================
+        // TOAST
+        // ============================================
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        // ============================================
+        // AUTH
+        // ============================================
+        let currentOTP = null;
+        let currentUserEmail = null;
+
+        function showAuth() {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('features').style.display = 'none';
+            document.querySelector('.hero').style.display = 'none';
+            document.getElementById('authSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function switchAuth(mode) {
+            const registerForm = document.getElementById('registerForm');
+            const loginForm = document.getElementById('loginForm');
+            const otpSection = document.getElementById('otpSection');
+            const subtitle = document.getElementById('authSubtitle');
+
+            registerForm.classList.add('hidden');
+            loginForm.classList.add('hidden');
+            otpSection.classList.add('hidden');
+
+            if (mode === 'register') {
+                registerForm.classList.remove('hidden');
+                subtitle.textContent = 'Create your account to get started';
+            } else {
+                loginForm.classList.remove('hidden');
+                subtitle.textContent = 'Login to your account';
+            }
+        }
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+
+            if (!name || !email) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            const users = getUsers();
+            if (users.find(u => u.email === email)) {
+                showToast('Email already registered. Please login.', 'error');
+                return;
+            }
+
+            // Generate OTP
+            currentOTP = String(Math.floor(100000 + Math.random() * 900000));
+            currentUserEmail = email;
+
+            // Store user data temporarily
+            localStorage.setItem('temp_user', JSON.stringify({ name, email }));
+
+            // Show OTP section
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('otpSection').classList.remove('hidden');
+            document.getElementById('authSubtitle').textContent = 'Verify your email with OTP';
+
+            // Auto-focus OTP
+            document.querySelector('.otp-input').focus();
+
+            // Show OTP in console (demo - in production, send email)
+            console.log('📧 OTP for ' + email + ': ' + currentOTP);
+            showToast('📧 OTP sent to ' + email + ' (Check console)', 'info');
+
+            // Simulate email sending
+            alert('📧 OTP sent to ' + email + '\n\nYour OTP is: ' + currentOTP + '\n\n(For demo purposes, check your console)');
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+
+            if (!email) {
+                showToast('Please enter your email', 'error');
+                return;
+            }
+
+            const users = getUsers();
+            const user = users.find(u => u.email === email);
+
+            if (!user) {
+                showToast('Email not found. Please register first.', 'error');
+                return;
+            }
+
+            // Generate OTP
+            currentOTP = String(Math.floor(100000 + Math.random() * 900000));
+            currentUserEmail = email;
+
+            // Show OTP section
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('otpSection').classList.remove('hidden');
+            document.getElementById('authSubtitle').textContent = 'Verify your email with OTP';
+
+            // Auto-focus OTP
+            document.querySelector('.otp-input').focus();
+
+            console.log('📧 OTP for ' + email + ': ' + currentOTP);
+            showToast('📧 OTP sent to ' + email + ' (Check console)', 'info');
+
+            alert('📧 OTP sent to ' + email + '\n\nYour OTP is: ' + currentOTP + '\n\n(For demo purposes, check your console)');
+        });
+
+        // OTP Input Auto-Advance
+        document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+            input.addEventListener('input', function() {
+                if (this.value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Verify OTP
+        function verifyOTP() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(inputs).map(i => i.value).join('');
+
+            if (otp.length !== 6) {
+                showToast('Please enter all 6 digits', 'error');
+                return;
+            }
+
+            if (otp !== currentOTP) {
+                showToast('Invalid OTP. Please try again.', 'error');
+                return;
+            }
+
+            // Check if user exists or new
+            const users = getUsers();
+            const tempUser = JSON.parse(localStorage.getItem('temp_user'));
+            let user = users.find(u => u.email === currentUserEmail);
+
+            if (!user && tempUser) {
+                // New user
+                user = {
+                    name: tempUser.name,
+                    email: tempUser.email,
+                    balance: 0,
+                    totalClaimed: 0,
+                    joined: new Date().toISOString()
+                };
+                users.push(user);
+                saveUsers(users);
+                localStorage.removeItem('temp_user');
+                showToast('🎉 Account created successfully!', 'success');
+            } else if (user) {
+                showToast('✅ Login successful!', 'success');
+            } else {
+                showToast('Error. Please try again.', 'error');
+                return;
+            }
+
+            // Set current user
+            setCurrentUser(user);
+            loadDashboard(user);
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('home').style.display = 'none';
+            document.getElementById('features').style.display = 'none';
+            document.querySelector('.hero').style.display = 'none';
+            document.querySelector('.footer').style.display = 'none';
+        }
+
+        function resendOTP() {
+            currentOTP = String(Math.floor(100000 + Math.random() * 900000));
+            console.log('📧 New OTP: ' + currentOTP);
+            showToast('📧 New OTP sent to ' + currentUserEmail, 'info');
+            alert('📧 New OTP sent to ' + currentUserEmail + '\n\nYour OTP is: ' + currentOTP);
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+        function loadDashboard(user) {
+            const dashboard = document.getElementById('dashboard');
+            dashboard.classList.add('active');
+
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userDisplayName').textContent = user.name;
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            // Balance
+            document.getElementById('totalBalance').textContent = '₦' + (user.balance || 0).toLocaleString();
+            document.getElementById('totalClaimed').textContent = '₦' + (user.totalClaimed || 0).toLocaleString();
+
+            // Check daily claim
+            const claims = getClaims();
+            const today = new Date().toDateString();
+            const claimKey = user.email + '_' + today;
+
+            if (claims[claimKey]) {
+                document.getElementById('claimStatus').textContent = '✅ Claimed today!';
+                document.getElementById('claimStatus').style.color = 'var(--success)';
+                document.querySelector('#claimBtn .quick-action').style.opacity = '0.5';
+                document.querySelector('#claimBtn .quick-action').style.cursor = 'not-allowed';
+            } else {
+                document.getElementById('claimStatus').textContent = '⏳ Click to claim ₦1,000';
+                document.getElementById('claimStatus').style.color = 'var(--warning)';
+            }
+
+            // Next claim time
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(9, 0, 0, 0);
+            document.getElementById('nextClaimTime').textContent = 'Tomorrow 9:00 AM';
+
+            // Days active
+            const joined = new Date(user.joined);
+            const days = Math.floor((now - joined) / (1000 * 60 * 60 * 24)) + 1;
+            document.getElementById('daysActive').textContent = days;
+
+            // Load transactions
+            loadTransactions(user.email);
+        }
+
+        function loadTransactions(email) {
+            const allTransactions = getTransactions();
+            const userTransactions = allTransactions.filter(t => t.email === email).reverse();
+
+            const list = document.getElementById('transactionsList');
+
+            if (userTransactions.length === 0) {
+                list.innerHTML = '<p style="color:var(--gray);text-align:center;padding:20px;">No transactions yet. Start by claiming your daily bonus!</p>';
+                return;
+            }
+
+            list.innerHTML = userTransactions.slice(0, 10).map(t => {
+                const iconClass = t.type === 'claim' ? 'claim' : (t.type === 'credit' ? 'credit' : 'debit');
+                const iconName = t.type === 'claim' ? 'gift' : (t.type === 'credit' ? 'arrow-down' : 'arrow-up');
+                const amountClass = t.type === 'claim' ? 'claim' : (t.type === 'credit' ? 'credit' : 'debit');
+                const sign = t.type === 'claim' ? '+' : (t.type === 'credit' ? '+' : '-');
+                return `
+                    <div class="transaction-item">
+                        <div class="icon ${iconClass}">
+                            <i class="fas fa-${iconName}"></i>
+                        </div>
+                        <div class="info">
+                            <h4>${t.description}</h4>
+                            <p>${new Date(t.date).toLocaleString()}</p>
+                        </div>
+                        <div class="amount ${amountClass}">${sign}₦${t.amount.toLocaleString()}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // DAILY CLAIM
+        // ============================================
+        function claimDaily() {
+            const user = getCurrentUser();
+            if (!user) return;
+
+            const claims = getClaims();
+            const today = new Date().toDateString();
+            const claimKey = user.email + '_' + today;
+
+            // Check if already claimed
+            if (claims[claimKey]) {
+                showToast('You already claimed ₦1,000 today! Come back tomorrow.', 'warning');
+                return;
+            }
+
+            // Check if it's 9:00 AM or later
+            const now = new Date();
+            const hours = now.getHours();
+
+            // For demo, allow anytime (change to 9 for production)
+            if (hours < 9) {
+                showToast('⏰ Daily claim is available at 9:00 AM. Come back then!', 'warning');
+                return;
+            }
+
+            // Claim amount
+            const amount = 1000;
+
+            // Update user balance
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === user.email);
+            if (userIndex === -1) return;
+
+            users[userIndex].balance = (users[userIndex].balance || 0) + amount;
+            users[userIndex].totalClaimed = (users[userIndex].totalClaimed || 0) + amount;
+            saveUsers(users);
+
+            // Save claim record
+            claims[claimKey] = true;
+            saveClaims(claims);
+
+            // Save transaction
+            const transactions = getTransactions();
+            transactions.push({
+                email: user.email,
+                type: 'claim',
+                description: 'Daily Claim Bonus ₦1,000',
+                amount: amount,
+                date: new Date().toISOString()
+            });
+            saveTransactions(transactions);
+
+            // Update current user
+            const updatedUser = users[userIndex];
+            setCurrentUser(updatedUser);
+
+            // Reload dashboard
+            loadDashboard(updatedUser);
+
+            showToast('🎉 Successfully claimed ₦1,000!', 'success');
+        }
+
+        // ============================================
+        // VIEW HISTORY
+        // ============================================
+        function viewHistory() {
+            const user = getCurrentUser();
+            if (!user) return;
+
+            const allTransactions = getTransactions();
+            const userTransactions = allTransactions.filter(t => t.email === user.email).reverse();
+
+            if (userTransactions.length === 0) {
+                showToast('No transactions yet.', 'info');
+                return;
+            }
+
+            let historyText = '📜 Transaction History\n\n';
+            userTransactions.forEach(t => {
+                const sign = t.type === 'claim' ? '+' : (t.type === 'credit' ? '+' : '-');
+                historyText += `${t.description}: ${sign}₦${t.amount.toLocaleString()} - ${new Date(t.date).toLocaleString()}\n`;
+            });
+
+            alert(historyText);
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        function logoutUser() {
+            clearCurrentUser();
+            document.getElementById('dashboard').classList.remove('active');
+            document.querySelector('.hero').style.display = 'flex';
+            document.getElementById('features').style.display = 'block';
+            document.querySelector('.footer').style.display = 'block';
+            document.getElementById('home').style.display = 'block';
+            showToast('Logged out successfully.', 'info');
+            location.reload();
+        }
+
+        // ============================================
+        // ADMIN LOGIN
+        // ============================================
+        function showAdminLogin() {
+            document.getElementById('adminLoginOverlay').classList.add('active');
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminLoginError').style.display = 'none';
+        }
+
+        function adminLogin() {
+            const name = document.getElementById('adminName').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+
+            if (name === 'mama111' && password === 'mama111') {
+                document.getElementById('adminLoginOverlay').classList.remove('active');
+                document.getElementById('adminPanel').classList.add('active');
+                document.querySelector('.hero').style.display = 'none';
+                document.getElementById('features').style.display = 'none';
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('active');
+                document.querySelector('.footer').style.display = 'none';
+                document.getElementById('home').style.display = 'none';
+
+                loadAdminPanel();
+                showToast('✅ Welcome Admin!', 'success');
+            } else {
+                document.getElementById('adminLoginError').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+
+        function adminLogout() {
+            document.getElementById('adminPanel').classList.remove('active');
+            document.querySelector('.hero').style.display = 'flex';
+            document.getElementById('features').style.display = 'block';
+            document.querySelector('.footer').style.display = 'block';
+            document.getElementById('home').style.display = 'block';
+            showToast('Logged out of admin.', 'info');
+        }
+
+        function loadAdminPanel() {
+            const users = getUsers();
+            const transactions = getTransactions();
+
+            // Stats
+            document.getElementById('adminTotalUsers').textContent = users.length;
+            document.getElementById('adminTotalClaims').textContent = transactions.filter(t => t.type === 'claim').length;
+
+            const totalAmount = transactions.filter(t => t.type === 'claim').reduce((sum, t) => sum + t.amount, 0);
+            document.getElementById('adminTotalAmount').textContent = '₦' + totalAmount.toLocaleString();
+
+            // Users list
+            const usersList = document.getElementById('adminUsersList');
+            if (users.length === 0) {
+                usersList.innerHTML = '<p style="color:var(--gray);text-align:center;padding:20px;">No users registered yet.</p>';
+            } else {
+                usersList.innerHTML = users.map(u => `
+                    <div class="admin-user-item">
+                        <div class="info">
+                            <h4>${u.name}</h4>
+                            <p>${u.email} • Balance: ₦${(u.balance || 0).toLocaleString()}</p>
+                            <p style="font-size:0.8rem;color:var(--gray);">Joined: ${new Date(u.joined).toLocaleDateString()}</p>
+                        </div>
+                        <span class="status active">Active</span>
+                    </div>
+                `).join('');
+            }
+
+            // Transactions list
+            const transList = document.getElementById('adminTransactionsList');
+            if (transactions.length === 0) {
+                transList.innerHTML = '<p style="color:var(--gray);text-align:center;padding:20px;">No transactions yet.</p>';
+            } else {
+                transList.innerHTML = transactions.reverse().map(t => {
+                    const sign = t.type === 'claim' ? '+' : (t.type === 'credit' ? '+' : '-');
+                    const color = t.type === 'claim' ? 'var(--warning)' : (t.type === 'credit' ? 'var(--success)' : 'var(--danger)');
+                    return `
+                        <div class="admin-user-item">
+                            <div class="info">
+                                <h4>${t.description}</h4>
+                                <p>${t.email} • ${new Date(t.date).toLocaleString()}</p>
+                            </div>
+                            <span style="color:${color};font-weight:700;">${sign}₦${t.amount.toLocaleString()}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // ============================================
+        // HAMBURGER MENU
+        // ============================================
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.querySelector('.nav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('open');
+        });
+
+        document.querySelectorAll('.nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('open');
+            });
+        });
+
+        // ============================================
+        // SCROLLSPY
+        // ============================================
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav ul li a:not([onclick])');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const top = section.offsetTop - 120;
+                if (window.scrollY >= top) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // ============================================
+        // CHECK LOGIN STATUS ON LOAD
+        // ============================================
+        window.onload = function() {
+            const user = getCurrentUser();
+            if (user) {
+                document.querySelector('.hero').style.display = 'none';
+                document.getElementById('features').style.display = 'none';
+                document.querySelector('.footer').style.display = 'none';
+                document.getElementById('home').style.display = 'none';
+                loadDashboard(user);
+            }
+        };
+
+        console.log('🏦 SecureBank Website Loaded!');
+        console.log('🔑 Admin: username="mama111", password="mama111"');
+        console.log('📧 OTP codes shown in console or alert box');
+        console.log('💰 Daily claim: ₦1,000 at 9:00 AM');
+        console.log('🔒 Withdrawals locked until December 2026');
+    </script>
+</body>
+</html>
