@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Chat</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        h1 {
+            color: #6C63FF;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .container {
+            background: #141428;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 18px;
+            margin: 10px 0;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #6C63FF;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 5px;
+            width: 100%;
+        }
+        .btn-primary {
+            background: #6C63FF;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #5A52D5;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-secondary:hover {
+            border-color: #6C63FF;
+        }
+        .btn-danger {
+            background: #ff4444;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #cc0000;
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            width: auto;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .my-id {
+            color: #8892b0;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        .my-id strong {
+            color: #fff;
+        }
+        .status {
+            padding: 8px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .status.waiting {
+            background: rgba(255, 193, 7, 0.15);
+            color: #FFC107;
+        }
+        .status.connected {
+            background: rgba(0, 200, 83, 0.15);
+            color: #00C853;
+        }
+        .status.error {
+            background: rgba(255, 68, 68, 0.15);
+            color: #ff4444;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .video-box {
+            background: #0a0a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            min-height: 180px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+        }
+        .video-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #111;
+        }
+        .video-box .label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        .video-box .placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #555;
+            font-size: 13px;
+            padding: 20px;
+        }
+        .video-box .placeholder i {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .controls .btn {
+            width: auto;
+            padding: 10px 16px;
+            font-size: 13px;
+            border-radius: 50px;
+        }
+        .btn-off {
+            background: #ff4444;
+            color: #fff;
+        }
+        .btn-off:hover {
+            background: #cc0000;
+        }
+        .btn-on {
+            background: #6C63FF;
+            color: #fff;
+        }
+        .btn-on:hover {
+            background: #5A52D5;
+        }
+        @media (max-width: 600px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            .video-box {
+                min-height: 140px;
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📹 Video Call</h1>
+
+    <!-- ===== JOIN SCREEN ===== -->
+    <div class="container" id="joinScreen">
+        <h3 style="margin-bottom:10px;">Enter Room ID</h3>
+        <input type="text" id="roomInput" placeholder="Enter Room ID..." />
+        <button class="btn btn-primary" onclick="joinRoom()">📞 Join Room</button>
+        <button class="btn btn-secondary" onclick="createRoom()">✨ Create New Room</button>
+        <p class="my-id">Your ID: <strong id="myPeerId">Loading...</strong></p>
+    </div>
+
+    <!-- ===== CALL SCREEN ===== -->
+    <div id="callScreen" class="hidden" style="width:100%;max-width:800px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:14px;color:#8892b0;">Room: <strong id="roomIdDisplay" style="color:#fff;">---</strong></span>
+            <div>
+                <button class="btn btn-sm btn-primary" onclick="copyRoomId()">📋 Copy</button>
+                <button class="btn btn-sm btn-danger" onclick="leaveRoom()">🚪 Leave</button>
+            </div>
+        </div>
+
+        <div class="status waiting" id="statusText">⏳ Connecting...</div>
+
+        <div class="video-grid">
+            <div class="video-box">
+                <video id="localVideo" autoplay muted playsinline></video>
+                <div class="label">📸 You</div>
+            </div>
+            <div class="video-box">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <div class="label" id="remoteLabel" style="display:none;">👤 Guest</div>
+                <div class="placeholder" id="remotePlaceholder">
+                    <i class="fas fa-user"></i>
+                    <p>Waiting for someone...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-on" id="micBtn" onclick="toggleMic()">🎤 Mic</button>
+            <button class="btn btn-on" id="cameraBtn" onclick="toggleCamera()">📷 Camera</button>
+            <button class="btn btn-on" id="screenBtn" onclick="toggleScreen()">🖥️ Screen</button>
+            <button class="btn btn-danger" onclick="leaveRoom()">📞 End</button>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous">
+    </script>
+    <script>
+        // ============================================
+        // PEERJS - WITH TURN SERVERS (WORKS ON ALL NETWORKS!)
+        // ============================================
+
+        const peer = new Peer(undefined, {
+            config: {
+                'iceServers': [
+                    // STUN servers - helps find your public IP
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' },
+                    { urls: 'stun:stun2.l.google.com:19302' },
+                    { urls: 'stun:stun3.l.google.com:19302' },
+                    { urls: 'stun:stun4.l.google.com:19302' },
+                    { urls: 'stun:stun.stunprotocol.org:3478' },
+
+                    // TURN servers - RELAY when direct connection fails
+                    // These are FREE public TURN servers
+                    {
+                        urls: 'turn:openrelay.metered.ca:80',
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    },
+                    {
+                        urls: 'turn:openrelay.metered.ca:443',
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    },
+                    {
+                        urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                        username: 'openrelayproject',
+                        credential: 'openrelayproject'
+                    },
+                    // Extra TURN server for reliability
+                    {
+                        urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
+                        username: 'webrtc',
+                        credential: 'webrtc'
+                    }
+                ]
+            },
+            debug: 2 // Shows detailed logs in console
+        });
+
+        let currentRoom = null;
+        let localStream = null;
+        let remoteStream = null;
+        let call = null;
+        let isMuted = false;
+        let isCameraOff = false;
+        let screenStream = null;
+        let isScreenSharing = false;
+
+        // ===== DOM =====
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const remotePlaceholder = document.getElementById('remotePlaceholder');
+        const remoteLabel = document.getElementById('remoteLabel');
+        const roomIdDisplay = document.getElementById('roomIdDisplay');
+        const joinScreen = document.getElementById('joinScreen');
+        const callScreen = document.getElementById('callScreen');
+        const roomInput = document.getElementById('roomInput');
+        const myPeerIdEl = document.getElementById('myPeerId');
+        const statusText = document.getElementById('statusText');
+
+        // ============================================
+        // PEER EVENTS
+        // ============================================
+        peer.on('open', (id) => {
+            myPeerIdEl.textContent = id;
+            console.log('✅ Connected with ID:', id);
+            console.log('📡 PeerJS is ready!');
+            console.log('🔧 Using STUN + TURN servers for reliable connection');
+        });
+
+        peer.on('error', (err) => {
+            console.error('❌ Peer Error:', err);
+            setStatus('❌ Error: ' + err.type, 'error');
+            if (err.type === 'unavailable-id') {
+                alert('❌ Room ID is already taken. Please try another.');
+            }
+        });
+
+        // ============================================
+        // CREATE / JOIN
+        // ============================================
+        function createRoom() {
+            const roomId = generateRoomId();
+            roomInput.value = roomId;
+            joinRoom(roomId);
+        }
+
+        function joinRoom(roomId) {
+            roomId = roomId || roomInput.value.trim();
+            if (!roomId) {
+                alert('Please enter a Room ID');
+                return;
+            }
+
+            currentRoom = roomId;
+            roomIdDisplay.textContent = roomId;
+            joinScreen.classList.add('hidden');
+            callScreen.classList.remove('hidden');
+            setStatus('⏳ Connecting...', 'waiting');
+
+            // Get media
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then((stream) => {
+                    localStream = stream;
+                    localVideo.srcObject = stream;
+                    setStatus('📡 Connected! Waiting for others...', 'waiting');
+
+                    // Listen for incoming calls
+                    peer.on('call', (incomingCall) => {
+                        console.log('📞 Incoming call from:', incomingCall.peer);
+                        if (localStream) {
+                            incomingCall.answer(localStream);
+                            handleCall(incomingCall);
+                        }
+                    });
+
+                    // Call the room
+                    setTimeout(() => {
+                        console.log('📞 Attempting to call room:', roomId);
+                        const callPeer = peer.call(roomId, localStream);
+                        if (callPeer) {
+                            handleCall(callPeer);
+                        } else {
+                            console.log('⏳ Waiting for others...');
+                            setStatus('⏳ Waiting for someone to join...', 'waiting');
+                        }
+                    }, 1500);
+
+                })
+                .catch((err) => {
+                    console.error('❌ Media error:', err);
+                    alert('❌ Please allow camera and microphone access');
+                    setStatus('❌ Camera/Mic access denied', 'error');
+                });
+        }
+
+        // ============================================
+        // HANDLE CALL
+        // ============================================
+        function handleCall(incomingCall) {
+            call = incomingCall;
+            call.on('stream', (remoteStreamData) => {
+                remoteStream = remoteStreamData;
+                remoteVideo.srcObject = remoteStreamData;
+                remotePlaceholder.style.display = 'none';
+                remoteLabel.style.display = 'flex';
+                setStatus('✅ Connected with guest!', 'connected');
+                console.log('✅ Remote stream connected!');
+            });
+
+            call.on('close', () => {
+                console.log('🔴 Call ended');
+                remoteVideo.srcObject = null;
+                remotePlaceholder.style.display = 'block';
+                remoteLabel.style.display = 'none';
+                setStatus('⏳ Other user left. Waiting...', 'waiting');
+                call = null;
+            });
+        }
+
+        // ============================================
+        // STATUS
+        // ============================================
+        function setStatus(text, type) {
+            statusText.textContent = text;
+            statusText.className = 'status ' + type;
+        }
+
+        // ============================================
+        // CONTROLS
+        // ============================================
+        function toggleMic() {
+            if (!localStream) return;
+            isMuted = !isMuted;
+            localStream.getAudioTracks().forEach(t => t.enabled = !isMuted);
+            const btn = document.getElementById('micBtn');
+            btn.textContent = isMuted ? '🔇 Muted' : '🎤 Mic';
+            btn.className = isMuted ? 'btn btn-off' : 'btn btn-on';
+        }
+
+        function toggleCamera() {
+            if (!localStream) return;
+            isCameraOff = !isCameraOff;
+            localStream.getVideoTracks().forEach(t => t.enabled = !isCameraOff);
+            const btn = document.getElementById('cameraBtn');
+            btn.textContent = isCameraOff ? '📷 Off' : '📷 Camera';
+            btn.className = isCameraOff ? 'btn btn-off' : 'btn btn-on';
+        }
+
+        function toggleScreen() {
+            if (isScreenSharing) {
+                if (screenStream) {
+                    screenStream.getTracks().forEach(t => t.stop());
+                    screenStream = null;
+                }
+                localVideo.srcObject = localStream;
+                isScreenSharing = false;
+                const btn = document.getElementById('screenBtn');
+                btn.textContent = '🖥️ Screen';
+                btn.className = 'btn btn-on';
+                return;
+            }
+
+            navigator.mediaDevices.getDisplayMedia({ video: true })
+                .then((stream) => {
+                    screenStream = stream;
+                    localVideo.srcObject = stream;
+                    isScreenSharing = true;
+                    const btn = document.getElementById('screenBtn');
+                    btn.textContent = '🛑 Stop';
+                    btn.className = 'btn btn-off';
+
+                    stream.getVideoTracks()[0].onended = () => {
+                        toggleScreen();
+                    };
+                })
+                .catch(() => {});
+        }
+
+        // ============================================
+        // LEAVE
+        // ============================================
+        function leaveRoom() {
+            if (confirm('Leave the room?')) {
+                if (call) { call.close();
+                    call = null; }
+                if (localStream) { localStream.getTracks().forEach(t => t.stop());
+                    localStream = null; }
+                if (remoteStream) { remoteStream.getTracks().forEach(t => t.stop());
+                    remoteStream = null; }
+                if (screenStream) { screenStream.getTracks().forEach(t => t.stop());
+                    screenStream = null; }
+
+                localVideo.srcObject = null;
+                remoteVideo.srcObject = null;
+                remotePlaceholder.style.display = 'block';
+                remoteLabel.style.display = 'none';
+
+                callScreen.classList.add('hidden');
+                joinScreen.classList.remove('hidden');
+                currentRoom = null;
+
+                document.getElementById('micBtn').textContent = '🎤 Mic';
+                document.getElementById('micBtn').className = 'btn btn-on';
+                document.getElementById('cameraBtn').textContent = '📷 Camera';
+                document.getElementById('cameraBtn').className = 'btn btn-on';
+                document.getElementById('screenBtn').textContent = '🖥️ Screen';
+                document.getElementById('screenBtn').className = 'btn btn-on';
+                isMuted = false;
+                isCameraOff = false;
+                isScreenSharing = false;
+                setStatus('Disconnected', 'waiting');
+            }
+        }
+
+        // ============================================
+        // UTILITY
+        // ============================================
+        function generateRoomId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let id = '';
+            for (let i = 0; i < 6; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+
+        function copyRoomId() {
+            const roomId = roomIdDisplay.textContent;
+            navigator.clipboard.writeText(roomId).then(() => {
+                alert('✅ Room ID copied: ' + roomId);
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = roomId;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('✅ Room ID copied: ' + roomId);
+            });
+        }
+
+        roomInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') joinRoom();
+        });
+
+        console.log('🎥 Video Chat Loaded!');
+        console.log('📱 Create a room and share the ID!');
+        console.log('🔧 Using STUN + TURN servers for reliable connection');
+        console.log('📡 This should work on ANY network (WiFi, 4G, 5G)');
+    </script>
+</body>
+</html>
