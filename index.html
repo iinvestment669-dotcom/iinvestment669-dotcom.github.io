@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Neon Drift · Arcade</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #0a0e17;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 1rem;
+            touch-action: none;
+        }
+
+        .game-wrapper {
+            background: #111927;
+            border-radius: 2.5rem;
+            padding: 1.8rem 1.8rem 2rem;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.9), inset 0 0 0 1px #2a3a4e;
+            max-width: 780px;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 0.3rem 1.2rem 0.3rem;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .stat {
+            background: #0d1624;
+            padding: 0.4rem 1.6rem;
+            border-radius: 40px;
+            border: 1px solid #2b4057;
+            color: #8bb3d9;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
+        }
+
+        .stat span {
+            color: #f5e97b;
+            font-size: 1.7rem;
+            min-width: 2.5rem;
+            text-align: center;
+        }
+
+        .lives-display {
+            display: flex;
+            gap: 4px;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            color: #ff6b7c;
+        }
+
+        .btn {
+            background: #1f3144;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e2edf7;
+            box-shadow: 0 5px 0 #0a121e, 0 4px 14px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            transition: all 0.06s linear;
+            border: 1px solid #3d5877;
+            letter-spacing: 0.5px;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #0a121e;
+        }
+
+        .btn:hover {
+            background: #2b415a;
+            border-color: #5c7fa0;
+        }
+
+        .canvas-box {
+            background: #0b131f;
+            border-radius: 1.8rem;
+            padding: 0.5rem;
+            box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.8), 0 0 0 1px #2b4057;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 700 / 450;
+            background: radial-gradient(ellipse at 30% 30%, #132233, #070d17);
+            border-radius: 1.5rem;
+            cursor: none;
+            touch-action: none;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.2rem;
+            padding-left: 0.3rem;
+            padding-right: 0.3rem;
+            color: #5d7c9b;
+            font-weight: 500;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .footer span {
+            background: #121e2d;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            border: 1px solid #29405a;
+        }
+
+        @media (max-width: 500px) {
+            .game-wrapper { padding: 1rem; }
+            .stat { font-size: 1rem; padding: 0.3rem 1rem; }
+            .stat span { font-size: 1.3rem; min-width: 2rem; }
+            .btn { font-size: 0.9rem; padding: 0.4rem 1.2rem; }
+            .lives-display { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-wrapper">
+    <div class="header">
+        <div class="stat">
+            🏆 <span id="scoreDisplay">0</span>
+        </div>
+        <div class="stat">
+            ❤️ <span class="lives-display" id="livesDisplay">❤️❤️❤️</span>
+        </div>
+        <button class="btn" id="restartBtn">⟳ RESTART</button>
+    </div>
+
+    <div class="canvas-box">
+        <canvas id="gameCanvas" width="700" height="450"></canvas>
+    </div>
+
+    <div class="footer">
+        <span>🕹️ move · mouse / touch</span>
+        <span>⚡ collect orbs · avoid drones</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreSpan = document.getElementById('scoreDisplay');
+        const livesSpan = document.getElementById('livesDisplay');
+
+        // ----- dimensions -----
+        const W = 700, H = 450;
+
+        // ----- game state -----
+        let player = { x: W/2, y: H/2, r: 14 };
+        let lives = 3;
+        let score = 0;
+        let gameOver = false;
+        let winFlag = false;    // true when score >= target
+
+        // enemies (drones)
+        let enemies = [];
+        // collectibles (orbs)
+        let orbs = [];
+
+        // particles (for effects)
+        let particles = [];
+
+        // timers / spawn
+        let enemySpawnCounter = 0;
+        const ENEMY_SPAWN_DELAY = 28;   // frames
+        const ORB_SPAWN_DELAY = 18;
+        let orbSpawnCounter = 0;
+
+        // target score to win (just for fun)
+        const WIN_SCORE = 30;
+
+        // ----- helper: update UI -----
+        function updateUI() {
+            scoreSpan.textContent = score;
+            // lives as hearts
+            const full = '❤️'.repeat(Math.min(lives, 5));
+            const empty = '🖤'.repeat(Math.max(0, 3 - lives));
+            livesSpan.textContent = full + empty;
+        }
+
+        // ----- reset game -----
+        function resetGame() {
+            player.x = W/2;
+            player.y = H/2;
+            lives = 3;
+            score = 0;
+            gameOver = false;
+            winFlag = false;
+            enemies = [];
+            orbs = [];
+            particles = [];
+            enemySpawnCounter = 0;
+            orbSpawnCounter = 0;
+            updateUI();
+        }
+
+        // ----- spawn enemy (drone) -----
+        function spawnEnemy() {
+            if (gameOver) return;
+            // spawn from edges
+            const side = Math.floor(Math.random() * 4); // 0:top,1:right,2:bottom,3:left
+            let x, y;
+            const pad = 30;
+            if (side === 0) { x = Math.random() * W; y = -pad; }
+            else if (side === 1) { x = W + pad; y = Math.random() * H; }
+            else if (side === 2) { x = Math.random() * W; y = H + pad; }
+            else { x = -pad; y = Math.random() * H; }
+
+            const speed = 1.5 + Math.random() * 1.8;
+            const angle = Math.atan2(player.y - y, player.x - x);
+            const vx = Math.cos(angle) * speed;
+            const vy = Math.sin(angle) * speed;
+
+            enemies.push({
+                x, y, vx, vy,
+                r: 11 + Math.floor(Math.random() * 5),
+                color: `hsl(${340 + Math.random() * 30}, 80%, 60%)`
+            });
+        }
+
+        // ----- spawn orb (collectible) -----
+        function spawnOrb() {
+            if (gameOver) return;
+            const x = 30 + Math.random() * (W - 60);
+            const y = 30 + Math.random() * (H - 60);
+            // avoid spawning right on player
+            const dx = x - player.x, dy = y - player.y;
+            if (dx * dx + dy * dy < 1800) {
+                // try again, but limit recursion
+                if (Math.random() < 0.5) return;
+            }
+            orbs.push({
+                x, y, r: 9,
+                color: `hsl(${180 + Math.random() * 60}, 90%, 65%)`,
+                pulse: Math.random() * Math.PI * 2
+            });
+        }
+
+        // ----- particles (explosion / collection) -----
+        function emitParticles(x, y, color, count = 18) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * 2 * Math.PI;
+                const speed = 1.2 + Math.random() * 3.5;
+                particles.push({
+                    x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 1.0,
+                    decay: 0.015 + Math.random() * 0.025,
+                    r: 3 + Math.random() * 5,
+                    color: color
+                });
+            }
+        }
+
+        // ----- collision: circle vs circle -----
+        function circlesCollide(x1, y1, r1, x2, y2, r2) {
+            const dx = x1 - x2, dy = y1 - y2;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            return dist < r1 + r2;
+        }
+
+        // ----- update game logic -----
+        function update() {
+            if (gameOver) return;
+
+            // --- player movement (mouse/touch) ---
+            // (we use canvas mousemove / touchmove to update player position)
+            // but we also clamp inside canvas
+
+            // --- enemy AI: move toward player ---
+            for (let e of enemies) {
+                const dx = player.x - e.x;
+                const dy = player.y - e.y;
+                const len = Math.sqrt(dx*dx + dy*dy);
+                if (len > 0.5) {
+                    const normX = dx / len;
+                    const normY = dy / len;
+                    e.x += e.vx * 0.4 + normX * 1.0;  // seek
+                    e.y += e.vy * 0.4 + normY * 1.0;
+                } else {
+                    e.x += e.vx * 0.5;
+                    e.y += e.vy * 0.5;
+                }
+                // keep inside (bounce off edges)
+                if (e.x < -20) e.x = W + 20;
+                if (e.x > W + 20) e.x = -20;
+                if (e.y < -20) e.y = H + 20;
+                if (e.y > H + 20) e.y = -20;
+            }
+
+            // --- enemy collision with player ---
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                if (circlesCollide(player.x, player.y, player.r, e.x, e.y, e.r)) {
+                    // player hit
+                    lives--;
+                    emitParticles(e.x, e.y, '#ff5e6b', 22);
+                    enemies.splice(i, 1);
+                    if (lives <= 0) {
+                        lives = 0;
+                        gameOver = true;
+                        updateUI();
+                        return;
+                    }
+                    updateUI();
+                }
+            }
+
+            // --- collect orbs ---
+            for (let i = orbs.length - 1; i >= 0; i--) {
+                const o = orbs[i];
+                if (circlesCollide(player.x, player.y, player.r, o.x, o.y, o.r)) {
+                    score++;
+                    emitParticles(o.x, o.y, '#7be0ff', 16);
+                    orbs.splice(i, 1);
+                    updateUI();
+
+                    // check win condition
+                    if (score >= WIN_SCORE) {
+                        winFlag = true;
+                        gameOver = true;
+                        // big celebration particles
+                        for (let k = 0; k < 6; k++) {
+                            setTimeout(() => {
+                                emitParticles(
+                                    100 + Math.random() * 500,
+                                    80 + Math.random() * 300,
+                                    `hsl(${Math.random() * 360}, 90%, 70%)`,
+                                    30
+                                );
+                            }, k * 80);
+                        }
+                        updateUI();
+                        return;
+                    }
+                }
+            }
+
+            // --- spawn enemies ---
+            enemySpawnCounter++;
+            if (enemySpawnCounter >= ENEMY_SPAWN_DELAY) {
+                enemySpawnCounter = 0;
+                if (enemies.length < 8 + Math.floor(score / 6)) {
+                    spawnEnemy();
+                }
+            }
+
+            // --- spawn orbs ---
+            orbSpawnCounter++;
+            if (orbSpawnCounter >= ORB_SPAWN_DELAY) {
+                orbSpawnCounter = 0;
+                if (orbs.length < 12) {
+                    spawnOrb();
+                }
+            }
+
+            // --- update particles ---
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.99;
+                p.vy *= 0.99;
+                p.life -= p.decay;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            // --- cap arrays (safety) ---
+            if (enemies.length > 40) enemies.splice(0, enemies.length - 40);
+            if (orbs.length > 30) orbs.splice(0, orbs.length - 30);
+            if (particles.length > 300) particles.splice(0, particles.length - 300);
+        }
+
+        // ----- draw everything -----
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            // ---- background grid / glow ----
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = 'rgba(60, 130, 200, 0.07)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < W; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, H);
+                ctx.stroke();
+            }
+            for (let i = 0; i < H; i += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(W, i);
+                ctx.stroke();
+            }
+
+            // ---- orbs (collectibles) ----
+            for (let o of orbs) {
+                const glow = 0.6 + 0.4 * Math.sin(o.pulse + performance.now() / 300);
+                ctx.shadowColor = o.color;
+                ctx.shadowBlur = 18 * glow;
+                ctx.beginPath();
+                ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+                ctx.fillStyle = o.color;
+                ctx.fill();
+                // inner highlight
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(o.x-2, o.y-2, o.r*0.3, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                ctx.fill();
+            }
+
+            // ---- enemies (drones) ----
+            for (let e of enemies) {
+                ctx.shadowColor = '#ff3b5c';
+                ctx.shadowBlur = 22;
+                // main body
+                ctx.beginPath();
+                ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+                ctx.fillStyle = e.color || '#ff4d6d';
+                ctx.fill();
+                // inner eye
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(e.x - 3, e.y - 3, e.r * 0.25, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.fill();
+                // red eye
+                ctx.beginPath();
+                ctx.arc(e.x + 2, e.y - 3, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#ff1a3c';
+                ctx.fill();
+            }
+
+            // ---- player (ship) ----
+            ctx.shadowColor = '#5fc3ff';
+            ctx.shadowBlur = 38;
+            // core
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+            ctx.fillStyle = '#70d4ff';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            // cockpit
+            ctx.beginPath();
+            ctx.arc(player.x-3, player.y-3, 6, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.6)';
+            ctx.fill();
+            // wings
+            ctx.fillStyle = '#4aa3df';
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = '#3a9bd9';
+            ctx.beginPath();
+            ctx.ellipse(player.x-14, player.y-2, 6, 10, 0.2, 0, Math.PI*2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(player.x+14, player.y-2, 6, 10, -0.2, 0, Math.PI*2);
+            ctx.fill();
+
+            // ---- particles ----
+            ctx.shadowBlur = 0;
+            for (let p of particles) {
+                ctx.globalAlpha = p.life * 0.9;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+                ctx.fillStyle = p.color || '#ffd966';
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1.0;
+
+            // ---- game over overlay ----
+            if (gameOver) {
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                ctx.fillRect(0, 0, W, H);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = 'bold 44px "Segoe UI", system-ui, sans-serif';
+                if (winFlag) {
+                    ctx.fillStyle = '#f5e97b';
+                    ctx.shadowColor = '#f5e97b';
+                    ctx.shadowBlur = 40;
+                    ctx.fillText('🏆 YOU WIN!', W/2, H/2 - 20);
+                    ctx.font = '22px sans-serif';
+                    ctx.fillStyle = '#b7d9f0';
+                    ctx.shadowBlur = 0;
+                    ctx.fillText('⭐ star collector ⭐', W/2, H/2 + 50);
+                } else {
+                    ctx.fillStyle = '#ff6b7c';
+                    ctx.shadowColor = '#ff3b5c';
+                    ctx.shadowBlur = 30;
+                    ctx.fillText('💀 GAME OVER', W/2, H/2 - 10);
+                    ctx.font = '20px sans-serif';
+                    ctx.fillStyle = '#b7c9dd';
+                    ctx.shadowBlur = 0;
+                    ctx.fillText('click RESTART', W/2, H/2 + 48);
+                }
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // ----- game loop -----
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ----- mouse / touch controls -----
+        function handleMove(e) {
+            if (gameOver) return;
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            let clientX, clientY;
+            if (e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            let canvasX = (clientX - rect.left) * scaleX;
+            let canvasY = (clientY - rect.top) * scaleY;
+            canvasX = Math.min(W - 10, Math.max(10, canvasX));
+            canvasY = Math.min(H - 10, Math.max(10, canvasY));
+
+            player.x = canvasX;
+            player.y = canvasY;
+        }
+
+        // ----- event listeners -----
+        canvas.addEventListener('mousemove', handleMove);
+        canvas.addEventListener('touchmove', handleMove, { passive: false });
+        canvas.addEventListener('touchstart', handleMove, { passive: false });
+
+        // restart button
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            resetGame();
+        });
+        // also restart on canvas click if gameover
+        canvas.addEventListener('click', () => {
+            if (gameOver) resetGame();
+        });
+
+        // init
+        resetGame();
+        // start loop
+        gameLoop();
+
+        // periodically spawn extra orbs if too few
+        setInterval(() => {
+            if (!gameOver && orbs.length < 5) {
+                spawnOrb();
+            }
+        }, 1200);
+
+        // window resize doesn't affect canvas logic
+        // but ensure canvas stays crisp
+        function handleResize() {
+            // nothing needed, aspect ratio maintained via CSS
+        }
+        window.addEventListener('resize', handleResize);
+    })();
+</script>
+</body>
+</html>
