@@ -10,12 +10,10 @@ const io = socketIo(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
-    },
-    transports: ['websocket', 'polling']
+    }
 });
 
-// Middleware
-app.use(cors());
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Store users and messages
@@ -44,7 +42,7 @@ io.on('connection', (socket) => {
             users: Array.from(users.values())
         });
         
-        console.log(`👤 ${user.username} joined the chat (${users.size} online)`);
+        console.log(`👤 ${user.username} joined (${users.size} online)`);
     });
 
     // New message
@@ -112,12 +110,8 @@ io.on('connection', (socket) => {
                 username: user.username,
                 users: Array.from(users.values())
             });
-            console.log(`👋 ${user.username} left the chat (${users.size} online)`);
+            console.log(`👋 ${user.username} left (${users.size} online)`);
         }
-    });
-
-    socket.on('error', (error) => {
-        console.error(`❌ Socket error for ${socket.id}:`, error);
     });
 });
 
@@ -126,14 +120,13 @@ app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         users: users.size,
-        messages: messages.length,
-        timestamp: new Date()
+        messages: messages.length
     });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Chat server running on http://localhost:${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-    console.log(`👥 Ready to accept connections`);
+    console.log(`\n🚀 Chat server running!`);
+    console.log(`📱 Open: http://localhost:${PORT}`);
+    console.log(`📊 Health: http://localhost:${PORT}/health\n`);
 });
