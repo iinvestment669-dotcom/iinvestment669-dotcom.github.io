@@ -10,22 +10,23 @@ const io = socketIo(server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
-    }
+    },
+    transports: ['websocket', 'polling']
 });
 
 // Middleware
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Store active users and messages
+// Store users and messages
 const users = new Map();
 const messages = [];
 const MAX_MESSAGES = 500;
 
 io.on('connection', (socket) => {
-    console.log(`User connected: ${socket.id}`);
+    console.log(`✅ User connected: ${socket.id}`);
 
-    // Send chat history to new user
+    // Send chat history
     socket.emit('chat history', messages.slice(-50));
 
     // User joins
@@ -38,16 +39,15 @@ io.on('connection', (socket) => {
         
         users.set(socket.id, user);
         
-        // Broadcast to all users
         io.emit('user joined', {
             user,
             users: Array.from(users.values())
         });
         
-        console.log(`${user.username} joined the chat`);
+        console.log(`👤 ${user.username} joined the chat (${users.size} online)`);
     });
 
-    // Handle new message
+    // New message
     socket.on('chat message', (data) => {
         const user = users.get(socket.id);
         if (!user) return;
@@ -63,7 +63,6 @@ io.on('connection', (socket) => {
 
         messages.push(message);
         
-        // Limit stored messages
         if (messages.length > MAX_MESSAGES) {
             messages.splice(0, messages.length - MAX_MESSAGES);
         }
@@ -71,7 +70,7 @@ io.on('connection', (socket) => {
         io.emit('chat message', message);
     });
 
-    // Handle typing indicator
+    // Typing indicator
     socket.on('typing', (isTyping) => {
         const user = users.get(socket.id);
         if (user) {
@@ -83,7 +82,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Handle private messages
+    // Private message
     socket.on('private message', ({ targetId, message }) => {
         const sender = users.get(socket.id);
         const recipient = users.get(targetId);
@@ -103,7 +102,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Handle disconnection
+    // Disconnect
     socket.on('disconnect', () => {
         const user = users.get(socket.id);
         if (user) {
@@ -113,17 +112,16 @@ io.on('connection', (socket) => {
                 username: user.username,
                 users: Array.from(users.values())
             });
-            console.log(`${user.username} left the chat`);
+            console.log(`👋 ${user.username} left the chat (${users.size} online)`);
         }
     });
 
-    // Error handling
     socket.on('error', (error) => {
-        console.error(`Socket error for ${socket.id}:`, error);
+        console.error(`❌ Socket error for ${socket.id}:`, error);
     });
 });
 
-// Health check endpoint
+// Health check
 app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
@@ -134,7 +132,8 @@ app.get('/health', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Chat server running on http://localhost:${PORT}`);
     console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log(`👥 Ready to accept connections`);
 });
