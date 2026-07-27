@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Chat Room</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 900px;
+            height: 90vh;
+            background: #16213e;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px 24px;
+            background: #0f3460;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #1a4f7a;
+        }
+
+        .chat-header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .user-count {
+            background: #1a4f7a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px 24px;
+            overflow-y: auto;
+            background: #1a1a2e;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #16213e;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #0f3460;
+            border-radius: 3px;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.system {
+            justify-content: center;
+            color: #8892b0;
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .message.private {
+            background: #1a3a5c;
+            border-left: 3px solid #e94560;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #0f3460;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-username {
+            font-weight: 600;
+            color: #64ffda;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .message-timestamp {
+            color: #8892b0;
+            font-size: 11px;
+        }
+
+        .message-text {
+            color: #ccd6f6;
+            word-wrap: break-word;
+            margin-top: 4px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .typing-indicator {
+            color: #8892b0;
+            font-style: italic;
+            font-size: 13px;
+            padding: 8px 24px;
+            min-height: 30px;
+        }
+
+        .chat-input-area {
+            padding: 16px 24px;
+            background: #0f3460;
+            display: flex;
+            gap: 12px;
+            border-top: 2px solid #1a4f7a;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #1a4f7a;
+            border-radius: 8px;
+            background: #16213e;
+            color: #ccd6f6;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #64ffda;
+        }
+
+        .chat-input-area input::placeholder {
+            color: #495670;
+        }
+
+        .chat-input-area button {
+            padding: 12px 28px;
+            background: #64ffda;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .chat-input-area button:hover {
+            background: #4cd8b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 255, 218, 0.3);
+        }
+
+        .chat-input-area button:active {
+            transform: translateY(0);
+        }
+
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 46, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-box {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            min-width: 320px;
+        }
+
+        .login-box h2 {
+            color: #64ffda;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #1a4f7a;
+            border-radius: 8px;
+            background: #1a1a2e;
+            color: #ccd6f6;
+            font-size: 16px;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .login-box input:focus {
+            border-color: #64ffda;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 14px;
+            background: #64ffda;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #4cd8b0;
+            transform: translateY(-2px);
+        }
+
+        .online-users {
+            padding: 8px 24px;
+            background: #0f3460;
+            color: #8892b0;
+            font-size: 13px;
+            border-bottom: 1px solid #1a4f7a;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            min-height: 38px;
+        }
+
+        .online-user {
+            background: #1a4f7a;
+            padding: 2px 12px;
+            border-radius: 12px;
+            color: #64ffda;
+            font-size: 12px;
+        }
+
+        .online-user.typing {
+            background: #e94560;
+            color: #fff;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .connection-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .connection-status.connected {
+            background: #34d399;
+            color: #064e3b;
+        }
+
+        .connection-status.disconnected {
+            background: #f87171;
+            color: #7f1d1d;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .login-box {
+                min-width: 280px;
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <h2>💬 Chat Room</h2>
+            <input type="text" id="usernameInput" placeholder="Enter your username..." maxlength="30">
+            <button id="joinBtn">Join Chat</button>
+            <div style="margin-top: 12px; color: #8892b0; font-size: 13px;" id="connectionStatus">Connecting to server...</div>
+        </div>
+    </div>
+
+    <div class="chat-container" id="chatContainer" style="display:none;">
+        <div class="chat-header">
+            <h1>💬 Chat Room</h1>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span id="connectionBadge" class="connection-status disconnected">● Disconnected</span>
+                <span class="user-count" id="userCount">0 online</span>
+            </div>
+        </div>
+        <div class="online-users" id="onlineUsers"></div>
+        <div class="chat-messages" id="messages"></div>
+        <div class="typing-indicator" id="typingIndicator"></div>
+        <div class="chat-input-area">
+            <input type="text" id="messageInput" placeholder="Type a message... (use @username for private)" maxlength="500">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Auto-detect server URL
+        const SOCKET_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : window.location.origin;
+
+        console.log('Connecting to server at:', SOCKET_URL);
+
+        // Initialize socket connection
+        const socket = io(SOCKET_URL, {
+            transports: ['websocket', 'polling'],
+            reconnection: true,
+            reconnectionAttempts: Infinity,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            timeout: 20000
+        });
+
+        // DOM elements
+        const loginOverlay = document.getElementById('loginOverlay');
+        const chatContainer = document.getElementById('chatContainer');
+        const usernameInput = document.getElementById('usernameInput');
+        const joinBtn = document.getElementById('joinBtn');
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const userCount = document.getElementById('userCount');
+        const onlineUsers = document.getElementById('onlineUsers');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const connectionBadge = document.getElementById('connectionBadge');
+
+        let currentUser = '';
+        let typingTimeout = null;
+        let isConnected = false;
+        let isJoining = false;
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            
+            if (connectionStatus) {
+                connectionStatus.textContent = connected ? '✅ Connected to server' : '⏳ Connecting to server...';
+                connectionStatus.style.color = connected ? '#64ffda' : '#f87171';
+            }
+            
+            if (connectionBadge) {
+                connectionBadge.className = `connection-status ${connected ? 'connected' : 'disconnected'}`;
+                connectionBadge.textContent = connected ? '● Connected' : '● Disconnected';
+            }
+
+            if (!connected && currentUser) {
+                // Show reconnecting message
+                const reconnectMsg = document.createElement('div');
+                reconnectMsg.className = 'message system';
+                reconnectMsg.id = 'reconnectMsg';
+                reconnectMsg.innerHTML = '<span>⚠️ Disconnected from server. Reconnecting...</span>';
+                
+                if (!document.getElementById('reconnectMsg')) {
+                    messagesDiv.appendChild(reconnectMsg);
+                    scrollToBottom();
+                }
+            } else if (connected) {
+                const reconnectMsg = document.getElementById('reconnectMsg');
+                if (reconnectMsg) {
+                    reconnectMsg.remove();
+                }
+            }
+        }
+
+        // Helper functions
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+        }
+
+        function getAvatarColor(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const colors = ['#e94560', '#f5a623', '#64ffda', '#4a9eff', '#a855f7', '#f472b6', '#34d399'];
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        function getInitials(username) {
+            return username.charAt(0).toUpperCase();
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 50);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function displayMessage(msg) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            
+            if (msg.type === 'system') {
+                messageDiv.className = 'message system';
+                messageDiv.innerHTML = `<span>${msg.message}</span>`;
+            } else if (msg.type === 'private') {
+                messageDiv.className = 'message private';
+                const avatarColor = getAvatarColor(msg.from);
+                messageDiv.innerHTML = `
+                    <div class="message-avatar" style="background:${avatarColor}">${getInitials(msg.from)}</div>
+                    <div class="message-content">
+                        <div>
+                            <span class="message-username">${escapeHtml(msg.from)}</span>
+                            <span class="message-timestamp">${formatTime(msg.timestamp)}</span>
+                            <span style="color:#e94560; font-size:12px; margin-left:8px;">🔒 Private</span>
+                        </div>
+                        <div class="message-text">${escapeHtml(msg.message)}</div>
+                    </div>
+                `;
+            } else {
+                const isOwn = msg.userId === socket.id;
+                const avatarColor = getAvatarColor(msg.username);
+                messageDiv.style.justifyContent = isOwn ? 'flex-end' : 'flex-start';
+                messageDiv.innerHTML = `
+                    ${!isOwn ? `<div class="message-avatar" style="background:${avatarColor}">${getInitials(msg.username)}</div>` : ''}
+                    <div class="message-content" style="${isOwn ? 'text-align: right;' : ''}">
+                        <div>
+                            <span class="message-username">${isOwn ? 'You' : escapeHtml(msg.username)}</span>
+                            <span class="message-timestamp">${formatTime(msg.timestamp)}</span>
+                        </div>
+                        <div class="message-text">${escapeHtml(msg.message)}</div>
+                    </div>
+                    ${isOwn ? `<div class="message-avatar" style="background:${avatarColor}">${getInitials(msg.username)}</div>` : ''}
+                `;
+            }
+            
+            messagesDiv.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function updateUserList(users) {
+            onlineUsers.innerHTML = '';
+            if (users && users.length > 0) {
+                users.forEach(user => {
+                    const span = document.createElement('span');
+                    span.className = 'online-user';
+                    span.textContent = user.username;
+                    span.dataset.userId = user.id;
+                    onlineUsers.appendChild(span);
+                });
+            } else {
+                onlineUsers.innerHTML = '<span style="color:#495670;">No users online</span>';
+            }
+        }
+
+        // Socket event handlers
+        socket.on('connect', () => {
+            console.log('✅ Connected to server');
+            updateConnectionStatus(true);
+            
+            // If user already joined, re-join automatically
+            if (currentUser && !isJoining) {
+                console.log('Re-joining as:', currentUser);
+                socket.emit('user join', currentUser);
+            }
+        });
+
+        socket.on('connect_error', (error) => {
+            console.error('❌ Connection error:', error);
+            updateConnectionStatus(false);
+        });
+
+        socket.on('disconnect', (reason) => {
+            console.log('❌ Disconnected:', reason);
+            updateConnectionStatus(false);
+            
+            if (reason === 'io server disconnect') {
+                // Server disconnected, reconnect manually
+                setTimeout(() => {
+                    socket.connect();
+                }, 1000);
+            }
+        });
+
+        socket.on('reconnect', (attemptNumber) => {
+            console.log(`🔄 Reconnected after ${attemptNumber} attempts`);
+            updateConnectionStatus(true);
+        });
+
+        socket.on('reconnect_attempt', (attemptNumber) => {
+            console.log(`🔄 Reconnection attempt ${attemptNumber}`);
+            updateConnectionStatus(false);
+        });
+
+        socket.on('chat history', (history) => {
+            messagesDiv.innerHTML = '';
+            if (history && history.length > 0) {
+                history.forEach(msg => displayMessage(msg));
+            }
+            scrollToBottom();
+        });
+
+        socket.on('chat message', (msg) => {
+            displayMessage(msg);
+        });
+
+        socket.on('user joined', ({ user, users }) => {
+            if (user.id !== socket.id) {
+                displayMessage({
+                    type: 'system',
+                    message: `${user.username} joined the chat`
+                });
+            }
+            userCount.textContent = `${users.length} online`;
+            updateUserList(users);
+        });
+
+        socket.on('user left', ({ username, users }) => {
+            displayMessage({
+                type: 'system',
+                message: `${username} left the chat`
+            });
+            userCount.textContent = `${users.length} online`;
+            updateUserList(users);
+        });
+
+        socket.on('user typing', ({ username, isTyping }) => {
+            const userElements = onlineUsers.querySelectorAll('.online-user');
+            userElements.forEach(el => {
+                if (el.textContent === username) {
+                    el.classList.toggle('typing', isTyping);
+                }
+            });
+            
+            if (isTyping) {
+                typingIndicator.textContent = `${username} is typing...`;
+            } else {
+                typingIndicator.textContent = '';
+            }
+        });
+
+        socket.on('private message', (msg) => {
+            displayMessage(msg);
+        });
+
+        socket.on('private message sent', (msg) => {
+            displayMessage(msg);
+        });
+
+        // Login
+        joinBtn.addEventListener('click', () => {
+            if (!isConnected) {
+                alert('⚠️ Cannot connect to server. Please check if the server is running.');
+                return;
+            }
+            
+            const username = usernameInput.value.trim() || 'Anonymous';
+            if (username.length > 30) {
+                alert('Username must be 30 characters or less');
+                return;
+            }
+            
+            currentUser = username;
+            isJoining = true;
+            socket.emit('user join', username);
+            
+            loginOverlay.style.display = 'none';
+            chatContainer.style.display = 'flex';
+            messageInput.focus();
+            
+            setTimeout(() => {
+                isJoining = false;
+            }, 1000);
+        });
+
+        usernameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') joinBtn.click();
+        });
+
+        // Send message
+        const sendMessage = () => {
+            if (!isConnected) {
+                alert('⚠️ Disconnected from server. Reconnecting...');
+                socket.connect();
+                return;
+            }
+            
+            const text = messageInput.value.trim();
+            if (text) {
+                // Check for private message format: @username message
+                const privateMatch = text.match(/^@(\w+)\s+(.+)/);
+                if (privateMatch) {
+                    const targetUsername = privateMatch[1];
+                    const message = privateMatch[2];
+                    // Find user by username
+                    const userElements = onlineUsers.querySelectorAll('.online-user');
+                    let targetId = null;
+                    userElements.forEach(el => {
+                        if (el.textContent === targetUsername) {
+                            targetId = el.dataset.userId;
+                        }
+                    });
+                    
+                    if (targetId) {
+                        socket.emit('private message', { targetId, message });
+                        messageInput.value = '';
+                    } else {
+                        alert(`User "${targetUsername}" not found`);
+                    }
+                } else {
+                    socket.emit('chat message', { message: text });
+                    messageInput.value = '';
+                }
+                messageInput.focus();
+            }
+        };
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Typing indicator
+        messageInput.addEventListener('input', () => {
+            if (messageInput.value.trim() && isConnected) {
+                socket.emit('typing', true);
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    socket.emit('typing', false);
+                }, 1000);
+            }
+        });
+
+        // Handle window focus events for reconnection
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !isConnected && currentUser) {
+                console.log('Tab focused, reconnecting...');
+                socket.connect();
+            }
+        });
+
+        console.log('💬 Chat application initialized');
+        console.log(`🔗 Server URL: ${SOCKET_URL}`);
+    </script>
+
+    <!-- Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</body>
+</html>
