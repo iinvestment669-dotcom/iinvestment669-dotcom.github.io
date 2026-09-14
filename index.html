@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wealth Library</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --text: #1d1d1f;
+    --text-soft: #6e6e73;
+    --accent: #1a4d8f;
+    --accent-soft: #e8eef7;
+    --border: #e5e5ea;
+    --gold: #a67c2e;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 90px;
+    line-height: 1.5;
+  }
+
+  .app {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--bg);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    position: sticky;
+    top: 0;
+    background: rgba(245,245,247,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+  header h1 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+  }
+  .icon-btn svg { width: 22px; height: 22px; }
+
+  /* MAIN */
+  main { padding: 20px; }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    margin-bottom: 10px;
+  }
+
+  .page-sub {
+    font-size: 16px;
+    color: var(--text-soft);
+    font-style: italic;
+    margin-bottom: 24px;
+    line-height: 1.45;
+  }
+
+  /* CONTINUE CARD */
+  .continue-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .continue-card:active { transform: scale(0.98); }
+  .continue-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .continue-card .label {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .continue-card .sub {
+    font-size: 14px;
+    color: var(--text-soft);
+  }
+  .chevron {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+  .chevron svg { width: 18px; height: 18px; }
+
+  /* SEARCH */
+  .search-wrap {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .search-wrap svg { width: 18px; height: 18px; color: var(--text-soft); flex-shrink: 0; }
+  .search-wrap input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+    background: transparent;
+    color: var(--text);
+  }
+  .search-wrap input::placeholder { color: #a1a1a6; }
+
+  /* CATEGORY HEADER */
+  .cat-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+    margin-top: 8px;
+  }
+
+  /* GUIDE CARD */
+  .guide-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .guide-card:active { transform: scale(0.98); }
+  .guide-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+  .guide-num {
+    font-size: 26px;
+    font-weight: 700;
+    color: #c7c7cc;
+    min-width: 42px;
+    letter-spacing: -1px;
+  }
+  .guide-info { flex: 1; }
+  .guide-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 3px;
+  }
+  .guide-meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-soft);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* BOTTOM TABS */
+  .tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 22px;
+    z-index: 100;
+  }
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #8e8e93;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+  .tab.active { color: var(--accent); }
+  .tab svg { width: 22px; height: 22px; }
+
+  /* SEGMENTED CONTROL */
+  .segmented {
+    display: flex;
+    background: #e9e9eb;
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 24px;
+    position: sticky;
+    bottom: 80px;
+    z-index: 40;
+  }
+  .segment {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .segment.active {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  }
+
+  /* DETAIL VIEW */
+  .detail { padding: 20px; }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 20px;
+  }
+  .back-btn svg { width: 18px; height: 18px; }
+
+  .detail h2 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    margin-bottom: 6px;
+  }
+  .detail .detail-sub {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+  }
+
+  .step {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .step-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .step h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.2px;
+  }
+  .step p {
+    font-size: 15px;
+    color: #3a3a3c;
+    line-height: 1.6;
+  }
+  .step .tip {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: var(--accent-soft);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--accent);
+    line-height: 1.5;
+  }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  /* SEARCH RESULTS */
+  .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-soft);
+    font-size: 15px;
+  }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: #fff8e6;
+    border-left: 3px solid var(--gold);
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #6b5320;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <button class="icon-btn" onclick="goHome()" aria-label="Home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+    <h1 id="headerTitle">The Wealth Library</h1>
+    <button class="icon-btn" onclick="focusSearch()" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- HOME VIEW -->
+  <div id="homeView">
+    <main>
+      <div class="section-label">The Library</div>
+      <h1 class="page-title" id="mainTitle">Foundations</h1>
+      <p class="page-sub" id="mainSub">The principles of money, discipline, and building wealth from the ground up.</p>
+
+      <div class="continue-card" onclick="continueReading()" id="continueCard">
+        <div>
+          <div class="label">Continue Reading</div>
+          <div class="sub" id="continueSub">Guide 01 · Step 1</div>
+        </div>
+        <div class="chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Filter by guides..." oninput="filterGuides()">
+      </div>
+
+      <div class="cat-header" id="catHeader">Foundations of Wealth</div>
+      <div id="guidesList"></div>
+    </main>
+
+    <div class="segmented" style="margin: 0 20px 20px;">
+      <button class="segment active" onclick="switchSection('foundations', this)">Foundations</button>
+      <button class="segment" onclick="switchSection('growth', this)">Growth</button>
+    </div>
+  </div>
+
+  <!-- DETAIL VIEW -->
+  <div id="detailView" class="hidden">
+    <div class="detail">
+      <button class="back-btn" onclick="goHome()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Library
+      </button>
+      <div class="section-label" id="detailLabel">Guide</div>
+      <h2 id="detailTitle"></h2>
+      <p class="detail-sub" id="detailSub"></p>
+      <div class="disclaimer">
+        <strong>Note:</strong> This guide is for educational purposes only. It is not financial, legal, or tax advice. Consult a licensed professional before making investment decisions.
+      </div>
+      <div id="stepsList"></div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <button class="tab active" onclick="goHome()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      Library
+    </button>
+    <button class="tab" onclick="alert('Chat feature coming soon.')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+      </svg>
+      Ask
+    </button>
+    <button class="tab" onclick="alert('Daily tips coming soon.')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      Daily
+    </button>
+    <button class="tab" onclick="alert('Audio guide coming soon.')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+      Audio
+    </button>
+    <button class="tab" onclick="alert('Reading plan coming soon.')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+      Plan
+    </button>
+  </nav>
+</div>
+
+<script>
+// ============ DATA ============
+const data = {
+  foundations: {
+    title: "Foundations",
+    subtitle: "The principles of money, discipline, and building wealth from the ground up.",
+    category: "Foundations of Wealth",
+    guides: [
+      {
+        num: "01",
+        title: "Money Mindset",
+        meta: "7 steps",
+        steps: [
+          { t: "Understand Wealth Is Built, Not Found", d: "Wealth rarely arrives by luck. It is the result of consistent decisions over years. Accept that you are responsible for your financial direction." },
+          { t: "Define What Rich Means to You", d: "Rich is not a number someone else sets. Write down your own target: a paid-off home, $1M invested, or $5,000/month passive income. Clarity creates direction.", tip: "Write your target on paper. Vague goals produce vague results." },
+          { t: "Adopt a Long-Term Horizon", d: "Most real wealth is built over 10–30 years. Short-term thinking leads to gambling. Long-term thinking leads to compounding." },
+          { t: "Separate Needs from Wants", d: "Before every purchase, ask: do I need this, or do I want it? Cutting wants by 20% can free up thousands per year to invest." },
+          { t: "Pay Yourself First", d: "The moment income arrives, move a fixed percentage into savings and investments. Live on what remains, not the other way around." },
+          { t: "Track Every Dollar for 30 Days", d: "You cannot fix what you do not measure. Track spending for one month to find leaks." },
+          { t: "Commit to Continuous Learning", d: "Read one book on money per month. Knowledge compounds faster than money." }
+        ]
+      },
+      {
+        num: "02",
+        title: "Budgeting Basics",
+        meta: "10 steps",
+        steps: [
+          { t: "Choose a Budget Method", d: "Popular methods: 50/30/20 (needs/wants/savings), zero-based, or envelope. Pick one and stick with it for 90 days." },
+          { t: "Calculate True Monthly Income", d: "Use your after-tax income, not gross. Include side income." },
+          { t: "List Fixed Expenses", d: "Rent, utilities, insurance, loan payments, subscriptions. These rarely change." },
+          { t: "List Variable Expenses", d: "Food, gas, entertainment, clothing. These are where cuts happen." },
+          { t: "Set a Savings Target", d: "Aim for at least 20% of income. If impossible today, start at 5% and increase by 1% each month." },
+          { t: "Automate Bills and Savings", d: "Automation removes willpower from the equation. Set transfers the day after payday." },
+          { t: "Review Weekly", d: "A 10-minute weekly check prevents month-end surprises." },
+          { t: "Adjust Monthly", d: "Budgets are living documents. Adjust, do not abandon." },
+          { t: "Build an Emergency Category", d: "Even $500 set aside prevents debt when small emergencies hit." },
+          { t: "Celebrate Milestones", d: "Reward consistency with low-cost treats. This keeps the habit alive." }
+        ]
+      },
+      {
+        num: "03",
+        title: "Emergency Fund",
+        meta: "5 steps",
+        steps: [
+          { t: "Start with $1,000", d: "Your first goal is a $1,000 buffer. This covers most common emergencies without debt." },
+          { t: "Open a Separate High-Yield Savings Account", d: "Keep emergency money out of your checking account so you are not tempted to spend it." },
+          { t: "Build to 3–6 Months of Expenses", d: "Once $1,000 is saved, grow to 3 months, then 6 months of essential expenses." },
+          { t: "Define What Counts as an Emergency", d: "Job loss, medical bills, urgent car or home repair. Sales and vacations do not count." },
+          { t: "Replenish After Use", d: "After using the fund, rebuild it before any other savings goal." }
+        ]
+      },
+      {
+        num: "04",
+        title: "Getting Out of Debt",
+        meta: "8 steps",
+        steps: [
+          { t: "List Every Debt", d: "Write balance, interest rate, and minimum payment for each." },
+          { t: "Choose Snowball or Avalanche", d: "Snowball: pay smallest first for motivation. Avalanche: pay highest interest first to save money." },
+          { t: "Pay Minimums on All, Extra on One", d: "Focus all extra money on a single debt while keeping others current." },
+          { t: "Stop Adding New Debt", d: "Freeze credit cards or remove them from your wallet." },
+          { t: "Negotiate Interest Rates", d: "Call creditors and ask for a lower rate. Many will say yes." },
+          { t: "Consider Balance Transfers", d: "0% APR transfers can save money, but only if you pay off before the promo ends." },
+          { t: "Sell What You Do Not Need", d: "Old electronics, clothes, furniture. Every dollar goes to debt." },
+          { t: "Celebrate Each Paid-Off Debt", d: "Mark it. Momentum matters." }
+        ]
+      }
+    ]
+  },
+  growth: {
+    title: "Growth",
+    subtitle: "Investing, assets, and strategies that multiply your money over time.",
+    category: "Wealth Growth & Investing",
+    guides: [
+      {
+        num: "05",
+        title: "Intro to Stocks",
+        meta: "12 steps",
+        steps: [
+          { t: "Understand What a Stock Is", d: "A stock is a small ownership share in a company. When the company grows, your share can grow." },
+          { t: "Open a Brokerage Account", d: "Choose a reputable low-cost broker. Many have no minimum and no commission on stocks." },
+          { t: "Learn the Two Ways to Profit", d: "Price appreciation (selling higher) and dividends (company profits paid to shareholders)." },
+          { t: "Understand Risk", d: "Stock prices move up and down. Money you need within 5 years should not be in individual stocks." },
+          { t: "Start with Index Funds", d: "An S&P 500 index fund owns 500 companies at once, spreading risk automatically." },
+          { t: "Invest Consistently", d: "Invest a fixed amount every month regardless of price. This is called dollar-cost averaging." },
+          { t: "Avoid Hot Tips", d: "If someone promises a guaranteed winner, walk away. Real investing is boring and slow." },
+          { t: "Reinvest Dividends", d: "Let dividends buy more shares automatically. This accelerates compounding." },
+          { t: "Keep Fees Low", d: "A 1% annual fee can cost you hundreds of thousands over 30 years. Choose funds under 0.20%." },
+          { t: "Diversify", d: "Do not put everything in one stock or one sector. Spread across markets and countries." },
+          { t: "Think in Decades, Not Days", d: "The stock market rewards patience. Time in the market beats timing the market." },
+          { t: "Review Annually, Not Daily", d: "Checking daily invites panic. Check once a year and rebalance." }
+        ]
+      },
+      {
+        num: "06",
+        title: "Index Funds & ETFs",
+        meta: "10 steps",
+        steps: [
+          { t: "What Is an Index Fund", d: "A fund that tracks a market index, like the S&P 500, at very low cost." },
+          { t: "What Is an ETF", d: "Exchange-Traded Fund. Trades like a stock, usually with very low fees." },
+          { t: "Why They Beat Most Pros", d: "Over 15+ years, most actively managed funds underperform low-cost index funds." },
+          { t: "Pick a Broad Market Fund", d: "Total US market or S&P 500 funds are common starting points." },
+          { t: "Add International Exposure", d: "10–30% in international funds reduces reliance on one country." },
+          { t: "Add Bonds as You Age", d: "Bonds reduce volatility. Younger investors can hold fewer; older investors more." },
+          { t: "Check the Expense Ratio", d: "Lower is better. Under 0.10% is excellent." },
+          { t: "Automate Contributions", d: "Set up automatic monthly buys so you never forget." },
+          { t: "Do Not Sell in Downturns", d: "Downturns are when long-term investors buy more, not sell." },
+          { t: "Rebalance Once a Year", d: "Restore your target percentages annually to control risk." }
+        ]
+      },
+      {
+        num: "07",
+        title: "Real Estate Basics",
+        meta: "9 steps",
+        steps: [
+          { t: "Understand the Two Income Streams", d: "Rental income and property appreciation." },
+          { t: "Save for a Down Payment", d: "Most loans require 3.5%–20% down. 20% avoids mortgage insurance." },
+          { t: "Check Your Credit Score", d: "Higher scores get lower interest rates. Aim for 740+." },
+          { t: "Run the Numbers", d: "Use the 1% rule: monthly rent should be at least 1% of purchase price for a rough check." },
+          { t: "Account for All Costs", d: "Taxes, insurance, maintenance (5–10% of rent), vacancies, property management." },
+          { t: "Start with a House Hack", d: "Buy a duplex, live in one unit, rent the other. This cuts your housing cost to near zero." },
+          { t: "Screen Tenants Carefully", d: "Credit, income, references. A bad tenant costs more than a vacant month." },
+          { t: "Use Leverage Wisely", d: "Debt magnifies gains and losses. Do not over-leverage." },
+          { t: "Think in 10-Year Windows", d: "Real estate rewards patience. Transaction costs are high; hold long-term." }
+        ]
+      },
+      {
+        num: "08",
+        title: "Starting a Business",
+        meta: "11 steps",
+        steps: [
+          { t: "Solve a Real Problem", d: "Businesses succeed by solving problems people will pay to fix." },
+          { t: "Validate Before You Build", d: "Talk to 20 potential customers before spending money." },
+          { t: "Start Small", d: "A side hustle tested on weekends beats a full launch with no proof." },
+          { t: "Keep Your Day Job", d: "Do not quit until the business replaces 6 months of income." },
+          { t: "Register the Business", d: "LLC or sole proprietorship depending on your country and risk." },
+          { t: "Separate Business and Personal Finances", d: "Open a business bank account immediately." },
+          { t: "Price for Profit", d: "Price = cost + margin. Do not compete only on price." },
+          { t: "Track Every Number", d: "Revenue, costs, profit, customers. What gets measured improves." },
+          { t: "Reinvest Early Profits", d: "Put profits back into marketing, tools, and hiring." },
+          { t: "Build Systems", d: "Document processes so the business can run without you." },
+          { t: "Think 5–10 Years", d: "Overnight successes usually took a decade." }
+        ]
+      },
+      {
+        num: "09",
+        title: "Passive Income",
+        meta: "8 steps",
+        steps: [
+          { t: "Understand 'Passive' Means 'Front-Loaded'", d: "Passive income requires heavy upfront work, then pays over time." },
+          { t: "Dividend Stocks", d: "Own companies that pay regular cash dividends. Reinvest to compound." },
+          { t: "Rental Income", d: "Real estate produces monthly cash flow, but is not truly hands-off." },
+          { t: "Digital Products", d: "E-books, courses, templates. Build once, sell many times." },
+          { t: "Content & Ads", d: "Blogs and YouTube channels earn ad and sponsor revenue over years." },
+          { t: "Licensing", d: "License your art, music, or invention to others for royalties." },
+          { t: "Peer Lending & Bonds", d: "Interest-bearing assets produce steady, lower-risk income." },
+          { t: "Diversify Streams", d: "Never rely on one source. Build 3–5 over time." }
+        ]
+      },
+      {
+        num: "10",
+        title: "Tax Basics",
+        meta: "6 steps",
+        steps: [
+          { t: "Know Your Tax Bracket", d: "Understand how marginal tax rates work. Only income above each threshold is taxed at the higher rate." },
+          { t: "Use Tax-Advantaged Accounts", d: "401(k), IRA, Roth IRA (US) or equivalents elsewhere. These shelter growth from taxes." },
+          { t: "Max Employer Match", d: "If your employer matches contributions, contribute at least enough to get the full match. It is free money." },
+          { t: "Track Deductible Expenses", d: "Business expenses, charitable donations, and some medical costs may reduce taxable income." },
+          { t: "Harvest Losses", d: "Selling losing investments can offset gains and reduce taxes." },
+          { t: "Hire a Professional", d: "A good accountant costs less than the taxes they save you." }
+        ]
+      }
+    ]
+  }
+};
+
+// ============ STATE ============
+let currentSection = 'foundations';
+let lastRead = { guide: 0, step: 0, section: 'foundations' };
+
+// Load saved progress
+try {
+  const saved = localStorage.getItem('wealthLibraryProgress');
+  if (saved) lastRead = JSON.parse(saved);
+} catch(e) {}
+
+// ============ RENDER ============
+function renderHome() {
+  const sec = data[currentSection];
+  document.getElementById('mainTitle').textContent = sec.title;
+  document.getElementById('mainSub').textContent = sec.subtitle;
+  document.getElementById('catHeader').textContent = sec.category;
+  document.getElementById('headerTitle').textContent = 'The Wealth Library';
+
+  const list = document.getElementById('guidesList');
+  list.innerHTML = '';
+  sec.guides.forEach((g, i) => {
+    const div = document.createElement('div');
+    div.className = 'guide-card';
+    div.dataset.title = g.title.toLowerCase();
+    div.onclick = () => openGuide(i);
+    div.innerHTML = `
+      <div class="guide-num">${g.num}</div>
+      <div class="guide-info">
+        <div class="guide-title">${g.title}</div>
+        <div class="guide-meta">${g.meta}</div>
+      </div>
+      <div class="chevron">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+
+  updateContinue();
+}
+
+function updateContinue() {
+  const g = data[lastRead.section].guides[lastRead.guide];
+  if (g) {
+    document.getElementById('continueSub').textContent = `Guide ${g.num} · Step ${lastRead.step + 1}`;
+  }
+}
+
+function switchSection(section, btn) {
+  currentSection = section;
+  document.querySelectorAll('.segment').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  renderHome();
+}
+
+function openGuide(index) {
+  const sec = data[currentSection];
+  const g = sec.guides[index];
+  document.getElementById('homeView').classList.add('hidden');
+  document.getElementById('detailView').classList.remove('hidden');
+  document.getElementById('headerTitle').textContent = g.title;
+  document.getElementById('detailLabel').textContent = sec.title;
+  document.getElementById('detailTitle').textContent = g.title;
+  document.getElementById('detailSub').textContent = g.meta + ' · Educational';
+
+  const stepsList = document.getElementById('stepsList');
+  stepsList.innerHTML = '';
+  g.steps.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'step';
+    div.innerHTML = `
+      <div class="step-num">Step ${i + 1}</div>
+      <h3>${s.t}</h3>
+      <p>${s.d}</p>
+      ${s.tip ? `<div class="tip">💡 ${s.tip}</div>` : ''}
+    `;
+    stepsList.appendChild(div);
+  });
+
+  // Save progress
+  lastRead = { guide: index, step: 0, section: currentSection };
+  localStorage.setItem('wealthLibraryProgress', JSON.stringify(lastRead));
+
+  window.scrollTo(0, 0);
+}
+
+function continueReading() {
+  currentSection = lastRead.section;
+  document.querySelectorAll('.segment').forEach(s => {
+    if (s.textContent.toLowerCase().includes(lastRead.section)) {
+      s.classList.add('active');
+    } else {
+      s.classList.remove('active');
+    }
+  });
+  renderHome();
+  openGuide(lastRead.guide);
+}
+
+function goHome() {
+  document.getElementById('detailView').classList.add('hidden');
+  document.getElementById('homeView').classList.remove('hidden');
+  document.getElementById('headerTitle').textContent = 'The Wealth Library';
+  renderHome();
+}
+
+function focusSearch() {
+  goHome();
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+}
+
+function filterGuides() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const cards = document.querySelectorAll('.guide-card');
+  let visible = 0;
+  cards.forEach(c => {
+    const match = c.dataset.title.includes(q);
+    c.style.display = match ? 'flex' : 'none';
+    if (match) visible++;
+  });
+  let noRes = document.getElementById('noResults');
+  if (visible === 0) {
+    if (!noRes) {
+      noRes = document.createElement('div');
+      noRes.id = 'noResults';
+      noRes.className = 'no-results';
+      noRes.textContent = 'No guides match your search.';
+      document.getElementById('guidesList').appendChild(noRes);
+    }
+  } else if (noRes) {
+    noRes.remove();
+  }
+}
+
+// ============ INIT ============
+renderHome();
+</script>
+</body>
+</html>
