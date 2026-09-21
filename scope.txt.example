@@ -1,0 +1,4 @@
+# One in-scope domain per line. No wildcards. No inline comments.
+# The tool refuses to touch anything not listed here.
+example.com
+app.example.com
