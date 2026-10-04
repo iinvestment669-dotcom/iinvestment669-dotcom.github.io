@@ -104,7 +104,7 @@ def stage_recon(domain, outdir, cfg):
     console.print("[*] crt.sh")
     try:
         r = requests.get(
-            f"https://crt.sh/?q=%25.{domain}&output=json", timeout=60
+            f"https://crt.sh/?q=%25.{domain}&output=json", timeout=160
         )
         for entry in r.json():
             for name in entry.get("name_value", "").split("\n"):
